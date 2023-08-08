@@ -4,29 +4,26 @@ import { Card, CardHeader, CardBody, Image, Link } from "@nextui-org/react";
 type CardType = {
   name: string;
   link: string;
+  image: string;
+  description: string;
 };
 
-const CardLink: React.FC<CardType> = ({ name, link }) => {
+const CardLink: React.FC<CardType> = ({ name, link, image, description }) => {
   return (
-    <Card className="py-4" as={Link} href={link} isExternal>
-      <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <h4 className="font-bold text-large">{name}</h4>
-        {/* <small className="text-default-500">12 Tracks</small> */}
-      </CardHeader>
-      <CardBody className="overflow-visible py-2">
+    <Card className="py-2" as={Link} href={link} isExternal>
+      <CardBody className="flex flex-row gap-5">
         <Image
           alt="Card background"
           className="object-cover rounded-xl"
-          src="https://nextui.org/images/hero-card-complete.jpeg"
-          width={270}
+          src={image}
+          width={40}
         />
+        <div className="flex flex-col">
+          <h4 className="text-md">{name}</h4>
+          <p className="text-small text-default-500">{description}</p>
+        </div>
       </CardBody>
     </Card>
-    // <a href={link} target="_blank" rel="noreferrer">
-    //   <div>
-    //     <h4>{name}</h4>
-    //   </div>
-    // </a>
   );
 };
 
