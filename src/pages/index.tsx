@@ -1,5 +1,6 @@
 import CardLink from "@/components/CardLink";
-import Image from "next/image";
+import { Image } from "@nextui-org/react";
+import NextImage from "next/image";
 
 const linksCards = [
   {
@@ -67,16 +68,15 @@ const linksCards = [
 export default function Page() {
   return (
     <div>
-      <header className="py-8">
-        <div className="relative w-full h-72">
-          <Image
-            src="/images/logo_web.png"
-            alt="logo"
-            fill
-            priority
-            className=" object-contain"
-          />
-        </div>
+      <header className="flex justify-center items-center py-8 min-h-[300px]">
+        <Image
+          as={NextImage}
+          src="/images/logo_web.png"
+          alt="logo"
+          width={600}
+          height={230}
+          className="h-auto"
+        />
       </header>
       <section className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
         {linksCards.map((props) => (
