@@ -73,6 +73,7 @@ export default function Page() {
             src="/images/logo_web.png"
             alt="logo"
             fill
+            priority
             className=" object-contain"
           />
         </div>
