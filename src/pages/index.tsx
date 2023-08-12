@@ -1,5 +1,6 @@
 import CardLink from "@/components/CardLink";
 import { Image } from "@nextui-org/react";
+import { Link } from "@nextui-org/react";
 import Head from "next/head";
 import NextImage from "next/image";
 
@@ -68,7 +69,7 @@ const linksCards = [
 
 export default function Page() {
   return (
-    <div>
+    <div className="min-h-screen relative pb-36">
       <Head>
         <title>DATASAM / Comunidad de datos</title>
         <meta charSet="utf-8" />
@@ -101,6 +102,23 @@ export default function Page() {
           <CardLink key={props.name} {...props} />
         ))}
       </section>
+
+      <footer className="flex justify-center items-center py-8 mt-24 absolute bottom-0 w-full">
+        <small className="text-gray-100">
+          Hecho con 🧉 por&nbsp;
+          <Link
+            href="https://javo.dev.ar/"
+            color="warning"
+            isExternal
+            size="sm"
+          >
+            <b>Javier Rodriguez</b>
+          </Link>
+          , para <b className="text-green-500">DATASAM</b>
+          &nbsp;-&nbsp;&copy;&nbsp;
+          {new Date().getFullYear()}
+        </small>
+      </footer>
     </div>
   );
 }

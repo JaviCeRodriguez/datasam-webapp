@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <NextUIProvider>
-      <main className="container mx-auto">
+      <main className="container mx-auto min-h-screen">
         <Component {...pageProps} />
       </main>
     </NextUIProvider>
