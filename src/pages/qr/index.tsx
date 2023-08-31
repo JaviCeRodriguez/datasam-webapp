@@ -22,10 +22,10 @@ const QRPage = () => {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="DATASAM" />
       </Head>
-      <h2 className="text-5xl font-semibold text-white mb-4">
+      <h2 className="text-4xl md:text-5xl text-center font-semibold text-white mb-4">
         ¡Compartí el QR!
       </h2>
-      <h4 className="text-xl font-semibold text-white mb-10">
+      <h4 className="text-lg md:text-xl text-center font-semibold text-white mb-10">
         Mostrá el QR a tus amigos para que se unan a la comunidad de DATASAM
       </h4>
       <div className="bg-white">
