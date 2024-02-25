@@ -10,8 +10,8 @@ import ReactFlow, {
 } from "reactflow";
 import CustomNode from "@/components/CustomNode";
 import "reactflow/dist/base.css";
-import { initNodes } from "../nodos";
-import { initEdges } from "../edges";
+import { initNodes } from "@/utils/nodos";
+import { initEdges } from "@/utils/edges";
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
