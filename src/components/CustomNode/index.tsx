@@ -61,12 +61,12 @@ const CustomNode = ({ data }: Props) => {
       <Handle
         type="target"
         position={Position.Top}
-        className="w-16 !bg-teal-500"
+        className="w-16 !bg-purple-500"
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        className="w-16 !bg-teal-500"
+        className="w-16 !bg-purple-500"
       />
     </div>
   );
