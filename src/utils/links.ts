@@ -18,12 +18,6 @@ export const linksCards = [
     description: "Comunidad de whatsapp",
   },
   {
-    name: "Telegram",
-    link: "https://t.me/+_GO5j1XQmpdkMGNh",
-    image: "/logos/telegram.png",
-    description: "Comunidad de telegram",
-  },
-  {
     name: "Notion",
     link: "https://datasam.notion.site/DATA-SAM-1e9dc7b00cd6444897be928a234e2e32",
     image: "/logos/notion.png",
