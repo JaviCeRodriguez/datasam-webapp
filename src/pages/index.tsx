@@ -45,7 +45,7 @@ export default function Page() {
           <small className="text-gray-100">
             Hecho con 🧉 por&nbsp;
             <Link
-              href="https://javo.dev.ar/"
+              href="https://javicerodriguez.com.ar/"
               color="warning"
               isExternal
               size="sm"
