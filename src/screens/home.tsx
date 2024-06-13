@@ -10,6 +10,8 @@ const HomeScreen = () => {
         src={Logo}
         alt="Logo"
         className="w-full py-12 mx-auto md:w-3/4 max-w-[800px]"
+        loading="lazy"
+        sizes="(max-width: 800px) 100vw, 800px"
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {linksCards.map((card, idx) => (
