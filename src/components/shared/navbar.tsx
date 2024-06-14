@@ -7,11 +7,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Navbar = () => {
   return (
-    <header className="sticky top-0 flex items-center h-16 gap-4 px-4 border-b bg-background md:px-6">
+    <header className="sticky top-0 z-50 flex items-center h-16 gap-4 px-4 border-b bg-background md:px-6">
       <nav className="flex-col hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link
           to="/"
           className="flex items-center gap-2 text-lg font-semibold md:text-base"
+          unstable_viewTransition
         >
           <CandlestickChart className="w-6 h-6" />
           <span className="sr-only">DATASAM</span>
@@ -36,6 +37,13 @@ const Navbar = () => {
           unstable_viewTransition
         >
           Ofertas
+        </Link>
+        <Link
+          to="/subjects"
+          className="transition-colors text-muted-foreground hover:text-foreground"
+          unstable_viewTransition
+        >
+          Materias
         </Link>
         <Link
           to="/qr"
