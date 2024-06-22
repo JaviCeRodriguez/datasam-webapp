@@ -31,7 +31,7 @@ const ProfileDropdown = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>
-          Hola {session?.user.user_metadata.full_name}!
+          Hola {session?.user.user_metadata.full_name ?? "usuario"}!
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {/* <DropdownMenuItem>Settings</DropdownMenuItem>
@@ -39,9 +39,11 @@ const ProfileDropdown = () => {
         {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem>
           {session ? (
-            <Button onClick={signOut}>Sign out</Button>
+            <Button onClick={signOut}>Cerrar sesión</Button>
           ) : (
-            <Button onClick={signInWithDiscord}>Sign in with Discord</Button>
+            <Button onClick={signInWithDiscord}>
+              Iniciar sesión (Discord)
+            </Button>
           )}
         </DropdownMenuItem>
       </DropdownMenuContent>
