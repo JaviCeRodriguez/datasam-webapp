@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
 import { Menu, CandlestickChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-// import ProfileDropdown from "@/components/shared/profile-dropdown";
+import ProfileDropdown from "@/components/shared/profile-dropdown";
 
 const Navbar = () => {
   return (
@@ -101,19 +100,9 @@ const Navbar = () => {
           </nav>
         </SheetContent>
       </Sheet>
-      {/* <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <form className="flex-1 ml-auto sm:flex-initial">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search products..."
-              className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-            />
-          </div>
-        </form>
+      <div className="flex justify-end w-full">
         <ProfileDropdown />
-      </div> */}
+      </div>
     </header>
   );
 };
