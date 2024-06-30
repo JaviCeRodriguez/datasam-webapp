@@ -19,7 +19,7 @@ export const linksCards = [
   },
   {
     name: "Notion",
-    link: "https://datasam.notion.site/DATA-SAM-1e9dc7b00cd6444897be928a234e2e32",
+    link: "https://datasam.notion.site/1e9dc7b00cd6444897be928a234e2e32?v=42ef38f5d4094f16bc159d973c1499f8&pvs=25",
     image: "logos/notion.png",
     description: "Nuestro repositorio de apuntes principal",
   },
