@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { linksCards } from "@/lib/links-home";
 import { Link } from "react-router-dom";
-import Logo from "@/assets/images/logo_web.png";
+import Logo from "@/assets/images/logo_h.svg";
 
 const HomeScreen = () => {
   return (
@@ -9,7 +9,7 @@ const HomeScreen = () => {
       <img
         src={Logo}
         alt="Logo"
-        className="w-full py-12 mx-auto md:w-3/4 max-w-[800px]"
+        className="w-full mt-12 mb-20 mx-auto md:w-3/4 max-w-[800px] drop-shadow-md"
         loading="lazy"
         sizes="(max-width: 800px) 100vw, 800px"
       />
