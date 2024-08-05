@@ -24,11 +24,11 @@ const Navbar = () => {
           Inicio
         </Link>
         <Link
-          to="/profiles"
+          to="/projects"
           className="transition-colors text-muted-foreground hover:text-foreground"
           unstable_viewTransition
         >
-          Perfiles
+          Proyectos
         </Link>
         <Link
           to="/jobs"
@@ -77,11 +77,11 @@ const Navbar = () => {
               Inicio
             </Link>
             <Link
-              to="/profiles"
+              to="/projects"
               className="text-muted-foreground hover:text-foreground"
               unstable_viewTransition
             >
-              Perfiles
+              Proyectos
             </Link>
             <Link
               to="/jobs"
