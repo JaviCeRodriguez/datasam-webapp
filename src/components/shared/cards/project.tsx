@@ -7,9 +7,6 @@ type Props = {
 };
 
 export const ProjectCard = ({ project }: Props) => {
-  console.log(project);
-  const cover =
-    "https://cdn.discordapp.com/attachments/970735662951186533/1269381417498837003/logo_v_rect.png?ex=66b12c91&is=66afdb11&hm=022d5b40611896012a152e24927b2027dd276298ef4ceee6cedc442d02bdc336&";
   return (
     <Card className="relative overflow-hidden grid grid-cols-1 md:grid-cols-2 drop-shadow-md">
       <CardContent className="p-4 flex flex-col justify-between gap-4 order-2 md:order-1">
@@ -44,9 +41,9 @@ export const ProjectCard = ({ project }: Props) => {
         </CardFooter> */}
       </CardContent>
       <img
-        src={cover}
+        src={project.cover || undefined}
         alt="cover"
-        className={`w-full h-40 md:h-full object-cover order-1 md:order-2 ${cover ? "" : "bg-gradient-to-br from-blue-500 to-purple-500"}`}
+        className={`w-full h-40 md:h-full object-cover order-1 md:order-2 ${project.cover ? "" : "bg-gradient-to-br from-blue-500 to-purple-500"}`}
       />
       <div className="absolute right-0 rounded-bl-lg overflow-hidden">
         {project.is_active ? (
