@@ -2,7 +2,7 @@ import QRDatasam from "@/assets/images/qr_datasam.svg?url";
 
 const QRScreen = () => {
   return (
-    <div>
+    <div className="p-4 md:10">
       <h2 className="mb-4 text-4xl font-semibold text-center md:text-5xl">
         ¡Compartí el QR!
       </h2>

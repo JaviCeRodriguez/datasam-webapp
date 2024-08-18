@@ -25,20 +25,20 @@ const ProjectsScreen = () => {
   }
 
   return (
-    <div>
+    <div className="p-4 md:10">
       <h2 className="text-2xl font-semibold">
         Proyectos de la comunidad, para la comunidad 🚀
       </h2>
-      <p className="text-gray-500 mt-2">
+      <p className="mt-2 text-gray-500">
         Aquí encontrarás proyectos de la comunidad de DATASAM. Estos proyectos
         pueden ser individuales o grupales, estrictamente sobre ciencia de datos
         o integrar otras áreas de conocimiento, pero lo que importa es aprender.
       </p>
-      <p className="text-gray-500 mt-2">
+      <p className="mt-2 text-gray-500">
         ¿Quieres agregar el tuyo? ¡Pronto podrás subirlo y obtener más
         información!
       </p>
-      <div className="grid grid-cols-1 xl:grid-cols-2 mt-6">
+      <div className="grid grid-cols-1 mt-6 xl:grid-cols-2">
         {(data as Project[]).map((project) => (
           <ProjectCard project={project} key={project.id} />
         ))}

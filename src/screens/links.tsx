@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { linksCards } from "@/lib/links-home";
 import { Link } from "react-router-dom";
-import Logo from "@/assets/images/logo_h.svg";
+import Logo from "@/assets/images/logo_h_oscuro_final.svg";
 
 const LinksScreen = () => {
   return (
-    <div>
+    <div className="p-4 md:10">
       <img
         src={Logo}
         alt="Logo"
