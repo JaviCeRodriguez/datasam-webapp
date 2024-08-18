@@ -1,5 +1,6 @@
 export type Project = {
   cover: string | null;
+  signedUrl?: string;
   created_at: string | null;
   description: string | null;
   estimated_total_duration: number | null;

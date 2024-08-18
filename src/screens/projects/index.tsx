@@ -2,7 +2,7 @@ import { ProjectCard } from "@/components/shared/cards/project";
 import { supabase } from "@/lib/supabaseClient";
 import { LoaderData } from "@/models/loader";
 import { Project } from "@/models/projects";
-import { useLoaderData, LoaderFunction } from "react-router-dom";
+import { useLoaderData, LoaderFunction, Outlet } from "react-router-dom";
 
 type LoaderResponse = {
   data: Project[] | null;
@@ -17,8 +17,7 @@ export const loader = (async () => {
 }) satisfies LoaderFunction;
 
 const ProjectsScreen = () => {
-  const { data, error } = useLoaderData() as LoaderData<typeof loader>;
-  console.log(data, error);
+  const { data } = useLoaderData() as LoaderData<typeof loader>;
 
   if (!data) {
     return <div>Loading...</div>;
@@ -43,6 +42,7 @@ const ProjectsScreen = () => {
           <ProjectCard project={project} key={project.id} />
         ))}
       </div>
+      <Outlet />
     </div>
   );
 };

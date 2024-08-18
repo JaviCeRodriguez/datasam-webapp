@@ -5,6 +5,9 @@ import { RootLayout } from "@/components/layouts/root.tsx";
 import ProjectsScreen, { loader as projectsLoader } from "@/screens/projects";
 import JobsScreen from "@/screens/jobs";
 import SubjectsScreen from "@/screens/subjects";
+import ProjectDetailModal, {
+  loader as projectModalLoader,
+} from "@/screens/projects/detail";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +22,13 @@ export const router = createBrowserRouter([
         path: "projects",
         element: <ProjectsScreen />,
         loader: projectsLoader,
+        children: [
+          {
+            path: ":id",
+            element: <ProjectDetailModal />,
+            loader: projectModalLoader,
+          },
+        ],
       },
       {
         path: "jobs",

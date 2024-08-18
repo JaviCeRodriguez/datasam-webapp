@@ -16,15 +16,19 @@ const ProfileDropdown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" size="icon" className="rounded-full">
+        <Button
+          variant="secondary"
+          size="icon"
+          className="rounded-full hover:drop-shadow-md ease-linear"
+        >
           {session ? (
             <img
               src={session.user.user_metadata.avatar_url}
               alt={session.user.user_metadata.full_name}
-              className="w-5 h-5 rounded-full"
+              className="w-10 h-10 rounded-full"
             />
           ) : (
-            <CircleUser className="w-5 h-5" />
+            <CircleUser className="w-7 h-7 text-pink-800 animate-pulse" />
           )}
           <span className="sr-only">Toggle user menu</span>
         </Button>

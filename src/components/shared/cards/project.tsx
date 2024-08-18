@@ -1,6 +1,13 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { stringToColor } from "@/lib/utils";
 import { Project } from "@/models/projects";
+import { Link } from "react-router-dom";
 
 type Props = {
   project: Project;
@@ -36,9 +43,11 @@ export const ProjectCard = ({ project }: Props) => {
             </div>
           )}
         </CardHeader>
-        {/*<CardFooter className="p-0">
-          <Button>Ver detalles</Button>
-        </CardFooter> */}
+        <CardFooter className="p-0">
+          <Button asChild>
+            <Link to={`/projects/${project.id}`}>Ver más</Link>
+          </Button>
+        </CardFooter>
       </CardContent>
       <img
         src={project.cover || undefined}
