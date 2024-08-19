@@ -1,21 +1,9 @@
-export const linksCards = [
+export const linksHome = [
   {
     name: "CODIGO DE CONDUCTA",
     link: "https://datasam.notion.site/C-DIGO-DE-CONDUCTA-ff93040740cf43ccb4e7286faa3a3eff",
     image: "logos/notion.png",
     description: "Reglas de convivencia, o hay tabla",
-  },
-  {
-    name: "Discord",
-    link: "https://discord.gg/b58Rhb63W6",
-    image: "logos/discord.png",
-    description: "Servidor de discord",
-  },
-  {
-    name: "Whatsapp",
-    link: "https://chat.whatsapp.com/GZYwzwIY8FZJH8qF1ooUpj",
-    image: "logos/whatsapp.png",
-    description: "Comunidad de whatsapp",
   },
   {
     name: "Notion",
@@ -24,16 +12,16 @@ export const linksCards = [
     description: "Nuestro repositorio de apuntes principal",
   },
   {
-    name: "Instagram: DATASAM",
-    link: "https://www.instagram.com/datasamok/",
-    image: "logos/instagram.webp",
-    description: "Nuestro medio audiovisual",
-  },
-  {
     name: "GitHub",
     link: "https://github.com/DATA-SAM-LCD",
     image: "logos/github.png",
     description: "Nuestros proyectos en GitHub",
+  },
+  {
+    name: "Instagram: DATASAM",
+    link: "https://www.instagram.com/datasamok/",
+    image: "logos/instagram.webp",
+    description: "Nuestro medio audiovisual",
   },
   {
     name: "Instagram: LCD",
@@ -52,5 +40,21 @@ export const linksCards = [
     link: "https://instagram.com/ecyt.unsam",
     image: "logos/instagram.webp",
     description: "Instagram de la escuela",
+  },
+];
+
+export const allLinks = [
+  ...linksHome,
+  {
+    name: "Discord",
+    link: "https://discord.gg/b58Rhb63W6",
+    image: "logos/discord.png",
+    description: "Servidor de discord",
+  },
+  {
+    name: "Whatsapp",
+    link: "https://chat.whatsapp.com/GZYwzwIY8FZJH8qF1ooUpj",
+    image: "logos/whatsapp.png",
+    description: "Comunidad de whatsapp",
   },
 ];

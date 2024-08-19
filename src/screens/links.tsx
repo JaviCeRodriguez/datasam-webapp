@@ -1,20 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { linksCards } from "@/lib/links-home";
+import { allLinks } from "@/lib/links-home";
 import { Link } from "react-router-dom";
-import Logo from "@/assets/images/logo_h_oscuro_final.svg";
+import LogoH from "@/assets/images/logo_h_claro_final.svg";
 
 const LinksScreen = () => {
   return (
     <div className="p-4 md:10">
       <img
-        src={Logo}
+        src={LogoH}
         alt="Logo"
-        className="w-full mt-12 mb-20 mx-auto md:w-3/4 max-w-[800px] drop-shadow-md"
+        className="mt-12 mb-20 mx-auto w-5/6 md:w-3/4 max-w-[800px] drop-shadow-md"
         loading="lazy"
         sizes="(max-width: 800px) 100vw, 800px"
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {linksCards.map((card, idx) => (
+        {allLinks.map((card, idx) => (
           <Link
             to={card.link}
             target="_blank"
