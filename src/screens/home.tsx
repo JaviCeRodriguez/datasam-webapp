@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 
 const HomeScreen = () => {
+  const currentYear = new Date().getFullYear();
+
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
@@ -147,6 +149,25 @@ const HomeScreen = () => {
             ))}
           </div>
         </section>
+
+        <footer className="mt-20 text-center">
+          <p>
+            Web desarrollada por{" "}
+            <a
+              href="https://javicerodriguez.com.ar/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-blue-500"
+            >
+              Javo
+            </a>
+            &nbsp;(con muchos 🧉), para&nbsp;
+            <span className="font-semibold text-orange-600 whitespace-nowrap">
+              DATA SAM
+            </span>{" "}
+            © {currentYear}
+          </p>
+        </footer>
       </main>
     </div>
   );
