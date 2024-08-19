@@ -93,6 +93,9 @@ const HomeScreen = () => {
             loading="lazy"
             sizes="(max-width: 800px) 100vw, 800px"
           />
+          <h2 className="text-xl font-semibold text-center text-white">
+            Donde el conocimiento se comparte y la comunidad se fortalece 🚀
+          </h2>
         </div>
       </div>
 
