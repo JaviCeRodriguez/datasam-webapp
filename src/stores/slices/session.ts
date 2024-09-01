@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Session } from "@supabase/supabase-js";
 import { StoreApi } from "zustand";
 import { RootStore } from "../root-store";
@@ -9,8 +10,8 @@ export type SessionState = {
 
 export const createSessionStore = (
   set: StoreApi<RootStore>["setState"],
-  get: StoreApi<RootStore>["getState"],
-  ...rest: StoreApi<RootStore>[]
+  _get: StoreApi<RootStore>["getState"],
+  ..._: StoreApi<RootStore>[]
 ) => ({
   session: null,
   setSession: (session: Session | null) =>
