@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { linksHome } from "@/lib/links-home";
-import LogoV from "@/assets/images/logo_v_claro_final.svg";
+import LogoV from "@/assets/images/logo_v_claro_sombra_final.svg";
 import { loadSlim } from "@tsparticles/slim";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";

@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { allLinks } from "@/lib/links-home";
 import { Link } from "react-router-dom";
-import LogoH from "@/assets/images/logo_h_claro_final.svg";
+import LogoH from "@/assets/images/logo_h_claro_sombra_final.svg";
 
 const LinksScreen = () => {
   return (
