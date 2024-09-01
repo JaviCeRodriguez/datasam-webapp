@@ -5,8 +5,11 @@ import LogoV from "@/assets/images/logo_v_claro_final.svg";
 import { loadSlim } from "@tsparticles/slim";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCollaboratorsData } from "@/hooks/use-collaborators";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HomeScreen = () => {
+  const { data: collaborators, loading } = useCollaboratorsData();
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
@@ -117,11 +120,56 @@ const HomeScreen = () => {
             bienvenidos los estudiantes y docentes de otras carreras que quieran
             aprender y compartir.
           </p>
+
+          <div className="grid gap-6 mt-10 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            {loading ? (
+              <>
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <Skeleton key={index} className="h-48" />
+                ))}
+              </>
+            ) : (
+              <>
+                {collaborators.map((collaborator, index) => (
+                  <Card key={index} className="overflow-hidden">
+                    <CardContent className="h-full p-0">
+                      <div className="flex flex-col h-full sm:flex-row">
+                        <div className="w-full sm:w-1/3 md:w-2/5 lg:w-1/3">
+                          <div className="relative w-full h-48 sm:h-full">
+                            <img
+                              src={`${
+                                import.meta.env.VITE_SUPABASE_URL
+                              }/storage/v1/object/public/collaborators/${
+                                collaborator.profile
+                              }`}
+                              alt="Javier Rodriguez"
+                              className="absolute inset-0 object-cover object-center w-full h-full rounded-t-lg sm:rounded-l-lg sm:rounded-t-none"
+                            />
+                          </div>
+                        </div>
+                        <div className="p-4 sm:w-2/3">
+                          <h3 className="text-lg font-semibold">
+                            {collaborator.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {collaborator.role}
+                          </p>
+                          <p className="mt-2 text-sm italic">
+                            {collaborator.phrase}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </>
+            )}
+          </div>
         </section>
 
         <section className="mt-20">
           <h4 className="mb-4 text-4xl font-semibold text-center">
-            <span className="font-semibold">Links</span> útiles
+            Links útiles
           </h4>
 
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">

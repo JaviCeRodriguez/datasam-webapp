@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { useSessionStore } from "@/stores/session";
+import { useRootStore } from "@/stores/root-store";
 
 export const useAuth = () => {
-  const session = useSessionStore((state) => state.session);
-  const setSession = useSessionStore((state) => state.setSession);
+  const session = useRootStore((state) => state.session);
+  const setSession = useRootStore((state) => state.setSession);
 
   const getSession = async () => {
     const { data, error } = await supabase.auth.getSession();
