@@ -19,7 +19,7 @@ export type SubjectsState = {
 export const createSubjectsStore = (
   set: StoreApi<RootStore>["setState"],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  get: StoreApi<RootStore>["getState"],
+  _get: StoreApi<RootStore>["getState"],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ..._: StoreApi<RootStore>[]
 ) => ({
