@@ -4,8 +4,8 @@ import QRScreen from "@/screens/qr";
 import { RootLayout } from "@/components/layouts/root.tsx";
 import ProjectsScreen, { loader as projectsLoader } from "@/screens/projects";
 import JobsScreen from "@/screens/jobs";
-import SubjectsScreen from "@/screens/subjects";
 import LinksScreen from "@/screens/links";
+import SubjectsScreen from "@/screens/subjects";
 
 export const router = createBrowserRouter([
   {

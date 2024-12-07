@@ -750,9 +750,9 @@ export const initNodes: Node[] = [
     data: {
       bg_color: "bg-[#d76060]",
       codigo: null,
-      anio: 5,
+      anio: 4,
       ciclo: "Avanzado",
-      cuatrimestre: 9,
+      cuatrimestre: 8,
       condicion: "carrera",
       materia: "Optativa 2",
       formato_didactico: "Asignatura o Taller",

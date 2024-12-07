@@ -5,14 +5,16 @@ import {
   CollaboratorsState,
   createCollaboratorsStore,
 } from "./slices/collaborators";
+import { createSubjectsStore, SubjectsState } from "./slices/subjects";
 
-export type RootStore = SessionState & CollaboratorsState;
+export type RootStore = SessionState & CollaboratorsState & SubjectsState;
 
 export const useRootStore = create<RootStore>()(
   persist(
     (...zustandActions) => ({
       ...createSessionStore(...zustandActions),
       ...createCollaboratorsStore(...zustandActions),
+      ...createSubjectsStore(...zustandActions),
     }),
     {
       name: "datasam-store",
