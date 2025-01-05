@@ -1,0 +1,59 @@
+"use client";
+
+import { useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRootStore } from "@/store/root-store";
+
+export const useAuth = () => {
+  const session = useRootStore((state) => state.session);
+  const setSession = useRootStore((state) => state.setSession);
+  const supabase = createClient();
+
+  const getSession = async () => {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) {
+      setSession(null);
+    }
+
+    setSession(data.session);
+  };
+
+  const getURL = () => {
+    let url =
+      process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
+      process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
+      "http://localhost:3000/";
+    // Make sure to include `https://` when not localhost.
+    url = url.startsWith("http") ? url : `https://${url}`;
+    // Make sure to include a trailing `/`.
+    url = url.endsWith("/") ? url : `${url}/`;
+    return url;
+  };
+
+  const signInWithDiscord = async () => {
+    const { data: dataSignIn, error: errorSignIn } =
+      await supabase.auth.signInWithOAuth({
+        provider: "discord",
+        options: {
+          redirectTo: getURL(),
+        },
+      });
+
+    if (!errorSignIn && dataSignIn) {
+      getSession();
+    }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+  };
+
+  useEffect(() => {
+    getSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return { session, signInWithDiscord, signOut };
+};
