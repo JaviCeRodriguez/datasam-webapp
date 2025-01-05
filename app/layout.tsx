@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Navbar from "@/components/shared/navbar";
 import { RootStoreProvider } from "@/components/providers/root-store-provider";
@@ -36,6 +37,7 @@ export default function RootLayout({
           <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 md:gap-8">
             {children}
             <Analytics />
+            <SpeedInsights />
           </main>
         </body>
       </RootStoreProvider>
