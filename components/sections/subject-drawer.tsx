@@ -93,16 +93,17 @@ export const SubjectDrawer = ({
 
           <h3 className="mt-4 mb-2 font-semibold">Correlativas:</h3>
           {correlativas.length > 0 ? (
-            <ul className="space-y-2">
+            <ul className="flex gap-2 flex-wrap">
               {correlativas.map((correlativa) => (
-                <li key={correlativa.code}>
-                  <Button
-                    variant="link"
-                    onClick={() => onCorrelativaClick(correlativa.code)}
-                  >
-                    {correlativa.nombre}
-                  </Button>
-                </li>
+                <Button
+                  asChild
+                  key={correlativa.code}
+                  className="bg-violet-300"
+                  variant="link"
+                  onClick={() => onCorrelativaClick(correlativa.code)}
+                >
+                  <li>{correlativa.nombre}</li>
+                </Button>
               ))}
             </ul>
           ) : (

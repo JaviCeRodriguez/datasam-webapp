@@ -11,9 +11,6 @@ type Props = {
     horasVirtuales: number;
   };
   onClick: () => void;
-  onHighlight: () => void;
-  isHighlighted: boolean;
-  isCorrelative: boolean;
 };
 
 const statusColors: Record<SubjectStatus, string> = {
@@ -23,27 +20,13 @@ const statusColors: Record<SubjectStatus, string> = {
   "Aprobado con Final": "bg-blue-200",
 };
 
-export const SubjectCard = ({
-  materia,
-  onClick,
-  onHighlight,
-  isHighlighted,
-  isCorrelative,
-}: Props) => {
+export const SubjectCard = ({ materia, onClick }: Props) => {
   const status = useRootStore(
     (state) => state.subjectStatuses[materia.code] || "Por hacer"
   );
 
   return (
-    <div
-      className={`relative ${
-        isHighlighted
-          ? "ring-2 ring-primary ring-offset-2"
-          : isCorrelative
-          ? "ring-2 ring-secondary ring-offset-2 animate-pulse"
-          : ""
-      }`}
-    >
+    <div className="relative">
       <Button
         variant="outline"
         className={`w-full justify-start text-left h-auto ${statusColors[status]}`}
@@ -60,17 +43,6 @@ export const SubjectCard = ({
           </div>
           <div className="mt-1 text-xs">{status}</div>
         </div>
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-1 right-1"
-        onClick={(e) => {
-          e.stopPropagation();
-          onHighlight();
-        }}
-      >
-        🔗
       </Button>
     </div>
   );
