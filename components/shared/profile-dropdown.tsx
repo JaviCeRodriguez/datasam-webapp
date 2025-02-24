@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
 
 const ProfileDropdown = () => {
-  const { session, signInWithDiscord, signOut } = useAuth();
+  const { session, signInWithGoogle, signOut } = useAuth();
 
   return (
     <DropdownMenu>
@@ -47,9 +47,7 @@ const ProfileDropdown = () => {
           <DropdownMenuLabel>Hola usuario!</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Button onClick={signInWithDiscord}>
-              Iniciar sesión (Discord)
-            </Button>
+            <Button onClick={signInWithGoogle}>Iniciar sesión (Google)</Button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       )}

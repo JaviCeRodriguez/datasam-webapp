@@ -28,15 +28,21 @@ export const useAuth = () => {
     url = url.startsWith("http") ? url : `https://${url}`;
     // Make sure to include a trailing `/`.
     url = url.endsWith("/") ? url : `${url}/`;
+    // Append `/auth/callback` to the URL.
+    url = `${url}auth/callback`;
     return url;
   };
 
-  const signInWithDiscord = async () => {
+  const signInWithGoogle = async () => {
     const { data: dataSignIn, error: errorSignIn } =
       await supabase.auth.signInWithOAuth({
-        provider: "discord",
+        provider: "google",
         options: {
           redirectTo: getURL(),
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
       });
 
@@ -55,5 +61,5 @@ export const useAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { session, signInWithDiscord, signOut };
+  return { session, signInWithGoogle, signOut };
 };
