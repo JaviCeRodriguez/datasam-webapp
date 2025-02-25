@@ -1,15 +1,24 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
-import { linksHome } from "@/lib/links-home";
+import { allLinks, linksHome } from "@/lib/links-home";
+import { useMemo } from "react";
+import { useSession } from "@/hooks/use-session";
 
 export const UsefulLinksHome = () => {
+  const { isEmailUNSAM } = useSession();
+
+  const links = useMemo(() => {
+    return isEmailUNSAM() ? allLinks : linksHome;
+  }, [isEmailUNSAM]);
+
   return (
     <section className="mt-20">
       <h4 className="mb-4 text-4xl font-semibold text-center">Links útiles</h4>
 
       <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
-        {linksHome.map((card, idx) => (
+        {links.map((card, idx) => (
           <Link
             href={card.link}
             target="_blank"
