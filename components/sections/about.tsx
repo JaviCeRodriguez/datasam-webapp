@@ -14,8 +14,8 @@ export const About = () => {
         ¿Quiénes somos?
       </h4>
       <p className="mb-4 text-lg">
-        👉🏼 Somos un grupo de estudiantes de la Licenciatura en Ciencia de Datos,
-        de la Universidad Nacional de San Martín.
+        👉🏼 Somos una comunidad de estudiantes de la Licenciatura en Ciencia de
+        Datos, de la Universidad Nacional de San Martín.
       </p>
       <p className="text-lg">
         🧉 Nuestro objetivo es brindar un espacio de encuentro y colaboración

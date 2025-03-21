@@ -8,7 +8,7 @@ export const Footer = () => {
       <p>
         Web desarrollada por{" "}
         <a
-          href="https://javicerodriguez.com.ar/"
+          href="https://javo.com.ar/"
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-blue-500"
