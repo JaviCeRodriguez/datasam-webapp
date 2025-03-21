@@ -44,7 +44,6 @@ export const linksHome = [
 ];
 
 export const allLinks = [
-  ...linksHome,
   {
     name: "Discord",
     link: "https://discord.gg/b58Rhb63W6",
@@ -57,4 +56,5 @@ export const allLinks = [
     image: "/logos/whatsapp.png",
     description: "Comunidad de whatsapp",
   },
+  ...linksHome,
 ];
