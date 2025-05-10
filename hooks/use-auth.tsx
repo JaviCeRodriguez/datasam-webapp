@@ -3,11 +3,13 @@
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRootStore } from "@/store/root-store";
+import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
   const session = useRootStore((state) => state.session);
   const setSession = useRootStore((state) => state.setSession);
   const supabase = createClient();
+  const router = useRouter();
 
   const getSession = async () => {
     const { data, error } = await supabase.auth.getSession();
@@ -54,6 +56,7 @@ export const useAuth = () => {
   const signOut = async () => {
     await supabase.auth.signOut();
     setSession(null);
+    router.push("/");
   };
 
   useEffect(() => {
