@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRootStore } from "@/store/root-store";
 import { useRouter } from "next/navigation";
+import useSupabaseBrowser from "@/lib/supabase/client";
 
 export const useAuth = () => {
   const session = useRootStore((state) => state.session);
   const setSession = useRootStore((state) => state.setSession);
-  const supabase = createClient();
+  const supabase = useSupabaseBrowser();
   const router = useRouter();
 
   const getSession = async () => {

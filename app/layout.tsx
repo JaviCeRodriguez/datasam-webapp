@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Navbar from "@/components/shared/navbar";
 import { RootStoreProvider } from "@/components/providers/root-store-provider";
+import { ReactQueryClientProvider } from "@/components/providers/tsq-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,19 +29,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <ReactQueryClientProvider>
       <RootStoreProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Navbar />
-          <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 md:gap-8">
-            {children}
-            <Analytics />
-            <SpeedInsights />
-          </main>
-        </body>
+        <html lang="en">
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <Navbar />
+            <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 md:gap-8">
+              {children}
+              <Analytics />
+              <SpeedInsights />
+            </main>
+          </body>
+        </html>
       </RootStoreProvider>
-    </html>
+    </ReactQueryClientProvider>
   );
 }

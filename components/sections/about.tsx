@@ -3,10 +3,27 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCollaboratorsData } from "@/hooks/use-collaborators";
+import useSupabaseBrowser from "@/lib/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { getCollaborators } from "@/queries/get-collaborators";
 
 export const About = () => {
-  const { data: collaborators, loading } = useCollaboratorsData();
+  const supabase = useSupabaseBrowser();
+
+  const { data: collaborators, isLoading } = useQuery({
+    queryKey: ["collaborators"],
+    queryFn: () => getCollaborators(supabase),
+  });
+
+  if (isLoading) {
+    return (
+      <section>
+        <h4 className="mb-4 text-4xl font-semibold text-center">
+          <Skeleton className="h-48" />
+        </h4>
+      </section>
+    );
+  }
 
   return (
     <section>
@@ -26,7 +43,7 @@ export const About = () => {
       </p>
 
       <div className="grid gap-6 mt-10 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {loading ? (
+        {isLoading ? (
           <>
             {Array.from({ length: 3 }).map((_, index) => (
               <Skeleton key={index} className="h-48" />
@@ -34,7 +51,7 @@ export const About = () => {
           </>
         ) : (
           <>
-            {collaborators.map((collaborator, index) => (
+            {collaborators?.data?.map((collaborator, index) => (
               <Card key={index} className="overflow-hidden">
                 <CardContent className="h-full p-0">
                   <div className="flex flex-col h-full sm:flex-row">
