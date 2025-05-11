@@ -4,12 +4,17 @@ import { useRouter } from "next/navigation";
 import useSupabaseBrowser from "@/lib/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getUser } from "@/queries/get-user";
+import { getUserRole } from "@/queries/get-user-role";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
-  const { data: userData, isLoading } = useQuery({
+  const { data: userData, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user"],
     queryFn: () => getUser(supabase),
+  });
+  const { data: userRoleData, isLoading: isLoadingUserRole } = useQuery({
+    queryKey: ["user-role"],
+    queryFn: () => getUserRole(supabase, userData?.data?.user?.id || ""),
   });
   const supabase = useSupabaseBrowser();
   const router = useRouter();
@@ -48,5 +53,12 @@ export const useAuth = () => {
     router.push("/");
   };
 
-  return { userData, isLoading, signInWithGoogle, signOut };
+  return {
+    userData,
+    isLoadingUser,
+    userRoleData,
+    isLoadingUserRole,
+    signInWithGoogle,
+    signOut,
+  };
 };
