@@ -5,7 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from "@/components/shared/navbar";
 import { RootStoreProvider } from "@/components/providers/root-store-provider";
 import { ReactQueryClientProvider } from "@/components/providers/tsq-provider";
-import "../../globals.css";
+import "@/app/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
