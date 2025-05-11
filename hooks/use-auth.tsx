@@ -44,12 +44,12 @@ export const useAuth = () => {
         },
       },
     });
-    queryClient.invalidateQueries({ queryKey: ["user"] });
+    queryClient.invalidateQueries();
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    queryClient.invalidateQueries({ queryKey: ["user"] });
+    queryClient.invalidateQueries();
     router.push("/");
   };
 
