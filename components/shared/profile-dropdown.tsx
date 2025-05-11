@@ -12,16 +12,16 @@ import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
 
 const ProfileDropdown = () => {
-  const { session, signInWithGoogle, signOut } = useAuth();
+  const { userData, signInWithGoogle, signOut } = useAuth();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="secondary" size="icon" className="rounded-full">
-          {session ? (
+          {userData?.data?.user ? (
             <Image
-              src={session.user.user_metadata.avatar_url}
-              alt={session.user.user_metadata.full_name}
+              src={userData?.data.user?.user_metadata.avatar_url}
+              alt={userData?.data.user?.user_metadata.full_name}
               className="w-8 h-8 rounded-full"
               width={20}
               height={20}
@@ -32,10 +32,10 @@ const ProfileDropdown = () => {
           <span className="sr-only">Toggle user menu</span>
         </Button>
       </DropdownMenuTrigger>
-      {session ? (
+      {userData?.data?.user ? (
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>
-            Hola {session.user.user_metadata.full_name}!
+            Hola {userData.data.user?.user_metadata.full_name}!
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>

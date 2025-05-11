@@ -1,25 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRootStore } from "@/store/root-store";
 import { useRouter } from "next/navigation";
 import useSupabaseBrowser from "@/lib/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUser } from "@/queries/get-user";
 
 export const useAuth = () => {
-  const session = useRootStore((state) => state.session);
-  const setSession = useRootStore((state) => state.setSession);
+  const queryClient = useQueryClient();
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => getUser(supabase),
+  });
   const supabase = useSupabaseBrowser();
   const router = useRouter();
-
-  const getSession = async () => {
-    const { data, error } = await supabase.auth.getSession();
-
-    if (error) {
-      setSession(null);
-    }
-
-    setSession(data.session);
-  };
 
   const getURL = () => {
     let url =
@@ -36,33 +29,24 @@ export const useAuth = () => {
   };
 
   const signInWithGoogle = async () => {
-    const { data: dataSignIn, error: errorSignIn } =
-      await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: getURL(),
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: getURL(),
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
         },
-      });
-
-    if (!errorSignIn && dataSignIn) {
-      getSession();
-    }
+      },
+    });
+    queryClient.invalidateQueries({ queryKey: ["user"] });
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    setSession(null);
+    queryClient.invalidateQueries({ queryKey: ["user"] });
     router.push("/");
   };
 
-  useEffect(() => {
-    getSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return { session, signInWithGoogle, signOut };
+  return { userData, isLoading, signInWithGoogle, signOut };
 };
