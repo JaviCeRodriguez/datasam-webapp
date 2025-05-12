@@ -15,6 +15,7 @@ export const useAuth = () => {
   const { data: userRoleData, isLoading: isLoadingUserRole } = useQuery({
     queryKey: ["user-role"],
     queryFn: () => getUserRole(supabase, userData?.data?.user?.id || ""),
+    enabled: !!userData?.data?.user?.id,
   });
   const supabase = useSupabaseBrowser();
   const router = useRouter();
