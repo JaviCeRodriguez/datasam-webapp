@@ -75,13 +75,13 @@ export default function FormsClient() {
                     Ver
                   </Button>
                 </Link>
-                <Link href={`/dashboard/forms/${form.id}/responses`}>
+                <Link href={`/dashboard/forms/${form.id}`}>
                   <Button variant="secondary" size="sm">
                     <FileText className="h-4 w-4" />
                     Respuestas
                   </Button>
                 </Link>
-                <Link href={`/dashboard/forms/${form.id}`}>
+                <Link href={`/dashboard/forms/${form.id}/edit`}>
                   <Button variant="destructive" size="sm">
                     <Pencil className="h-4 w-4" />
                     Editar
