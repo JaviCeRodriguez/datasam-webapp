@@ -11,6 +11,12 @@ import {
 } from "../ui/breadcrumb";
 import { usePathname } from "next/navigation";
 
+const isUUID = (value: string) => {
+  return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+    value
+  );
+};
+
 export function BreadcrumbDashboard() {
   const pathname = usePathname();
 
@@ -18,14 +24,18 @@ export function BreadcrumbDashboard() {
     return path
       .split("/")
       .filter(Boolean)
-      .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+      .map((segment) =>
+        isUUID(segment)
+          ? segment
+          : segment.charAt(0).toUpperCase() + segment.slice(1)
+      )
       .slice(1);
   };
 
   const getPartialUrl = (segment: string) => {
-    const segments = pathname.split("/");
-    const index = segments.indexOf(segment);
-    return segments.slice(0, index + 1).join("/");
+    const segments = pathname.split("/").slice(1);
+    const index = segments.indexOf(segment.toLowerCase());
+    return `/${segments.slice(0, index + 1).join("/")}`;
   };
 
   return (
