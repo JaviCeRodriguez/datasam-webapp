@@ -34,7 +34,7 @@ export default function FormResponsesClient({ id }: { id: string }) {
           </div>
         ) : (
           <div>
-            <p>Respuestas</p>
+            <pre>{JSON.stringify(form?.data, null, 2)}</pre>
           </div>
         )}
       </div>

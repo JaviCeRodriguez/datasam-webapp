@@ -41,20 +41,23 @@ import { useToast } from "@/hooks/use-toast";
 import { Database } from "@/lib/supabase/database.types";
 import useSupabaseBrowser from "@/lib/supabase/client";
 import { Resolver } from "react-hook-form";
+import { updateForm } from "@/queries/update-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { postForm } from "@/queries/post-form";
 
 interface FormBuilderProps {
   form?: FormType;
 }
 
-type FormType = Database["public"]["Tables"]["forms"]["Row"];
+export type FormType = Database["public"]["Tables"]["forms"]["Row"];
 
 export function FormBuilder({ form }: FormBuilderProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const supabase = useSupabaseBrowser();
+  const queryClient = useQueryClient();
 
-  // Convertir los campos del formulario existente al formato esperado
   const initialFields = form?.fields
     ? Array.isArray(form.fields)
       ? (form.fields as FormFieldValues[])
@@ -128,34 +131,32 @@ export function FormBuilder({ form }: FormBuilderProps) {
         throw new Error("Usuario no autenticado");
       }
 
-      if (form) {
-        // Actualizar formulario existente
-        const { error } = await supabase
-          .from("forms")
-          .update({
-            title: values.title,
-            description: values.description,
-            fields: values.fields,
-          })
-          .eq("id", form.id);
+      if (form?.id) {
+        const { error } = await updateForm(supabase, form.id, {
+          title: values.title,
+          description: values.description ?? null,
+          fields: values.fields,
+        });
 
         if (error) throw error;
 
+        queryClient.invalidateQueries({ queryKey: ["forms"] });
         toast({
           title: "Formulario actualizado",
           description: "Tu formulario ha sido actualizado correctamente.",
         });
       } else {
-        // Crear nuevo formulario
-        const { error } = await supabase.from("forms").insert({
+        const { error } = await postForm(supabase, {
           title: values.title,
-          description: values.description,
+          description: values.description ?? null,
           fields: values.fields,
           creator_id: user.id,
+          created_at: new Date().toISOString(),
         });
 
         if (error) throw error;
 
+        queryClient.invalidateQueries({ queryKey: ["forms"] });
         toast({
           title: "Formulario creado",
           description: "Tu formulario ha sido creado correctamente.",

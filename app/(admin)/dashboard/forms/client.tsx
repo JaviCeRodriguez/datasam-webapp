@@ -51,7 +51,7 @@ export default function FormsClient() {
           <Loader2 className="h-4 w-4 animate-spin" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
           {forms?.data?.map((form) => (
             <Card key={form.id}>
               <CardHeader>
