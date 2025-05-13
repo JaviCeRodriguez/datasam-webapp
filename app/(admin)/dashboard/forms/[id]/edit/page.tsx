@@ -7,14 +7,15 @@ import {
 } from "@tanstack/react-query";
 import FormEditClient from "./client";
 
-interface PageProps {
-  params: {
+type PageProps = {
+  params: Promise<{
     id: string;
-  };
-}
+  }>;
+};
 
-export default async function FormEditPage({ params }: PageProps) {
-  const { id } = params;
+export default async function FormEditPage(props: PageProps) {
+  const params = await props.params;
+  const id = params.id;
   const queryClient = new QueryClient();
   const supabase = await createSupabaseServer();
 

@@ -7,12 +7,15 @@ import {
 import createSupabaseServer from "@/lib/supabase/server";
 import { getForm } from "@/queries/get-form";
 
-export default async function FormResponsesPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const { id } = await params;
+type PageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export default async function FormResponsesPage(props: PageProps) {
+  const params = await props.params;
+  const id = params.id;
   const queryClient = new QueryClient();
   const supabase = await createSupabaseServer();
 
