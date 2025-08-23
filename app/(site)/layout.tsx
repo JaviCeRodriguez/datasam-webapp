@@ -1,27 +1,6 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import Navbar from "@/components/shared/navbar";
-import { RootStoreProvider } from "@/components/providers/root-store-provider";
-import { ReactQueryClientProvider } from "@/components/providers/tsq-provider";
-import "@/app/globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "DATA SAM",
-  description:
-    "DATA SAM: Donde el conocimiento se comparte y la comunidad se fortalece 🚀",
-};
+import type React from "react";
+import { Navigation } from "./_componentes/Navigation";
+import { Footer } from "./_componentes/Footer";
 
 export default function RootLayout({
   children,
@@ -29,21 +8,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ReactQueryClientProvider>
-      <RootStoreProvider>
-        <html lang="en">
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          >
-            <Navbar />
-            <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 md:gap-8">
-              {children}
-              <Analytics />
-              <SpeedInsights />
-            </main>
-          </body>
-        </html>
-      </RootStoreProvider>
-    </ReactQueryClientProvider>
+    <>
+      <Navigation />
+      {children}
+      <Footer />
+    </>
   );
 }
