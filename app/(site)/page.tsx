@@ -1,10 +1,10 @@
 "use client"
 
-import { HeroSection } from "./_componentes/HeroSection"
-import { AboutSection } from "./_componentes/AboutSection"
-import { TeamSection } from "./_componentes/TeamSection"
-import { ResourcesSection } from "./_componentes/ResourcesSection"
-import { CTASection } from "./_componentes/CTASection"
+import { HeroSection } from "./_components/HeroSection"
+import { AboutSection } from "./_components/AboutSection"
+import { TeamSection } from "./_components/TeamSection"
+import { ResourcesSection } from "./_components/ResourcesSection"
+import { CTASection } from "./_components/CTASection"
 
 export default function DataSamHomepage() {
   return (

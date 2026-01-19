@@ -13,7 +13,7 @@ export function LinksSection() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold font-poppins mb-4">Links Útiles</h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-8"></div>
-          <p className="text-lg text-muted-foreground">Enlaces esenciales para la comunidad DataSam</p>
+          <p className="text-lg text-muted-foreground">Enlaces esenciales para la comunidad DATA SAM</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

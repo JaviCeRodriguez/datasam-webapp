@@ -11,13 +11,16 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.55 0.25 320); /* Vibrant magenta/pink */
+  --primary: oklch(0.55 0.25 320);
+  /* Vibrant magenta/pink */
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.65 0.2 200); /* Cyan blue */
+  --secondary: oklch(0.65 0.2 200);
+  /* Cyan blue */
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.97 0.01 320);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.6 0.22 260); /* Purple accent */
+  --accent: oklch(0.6 0.22 260);
+  /* Purple accent */
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
@@ -120,6 +123,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -127,10 +131,12 @@
 
 /* Added custom animations for student-friendly interactions */
 @keyframes pulse-glow {
+
   0%,
   100% {
     box-shadow: 0 0 20px rgba(139, 69, 19, 0.3);
   }
+
   50% {
     box-shadow: 0 0 30px rgba(139, 69, 19, 0.6);
   }
@@ -138,4 +144,9 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
 }

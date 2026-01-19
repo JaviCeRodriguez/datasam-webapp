@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { LinksSection } from "./_componentes/LinksSection"
 
 export default function LinksPage() {
@@ -8,14 +9,9 @@ export default function LinksPage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-8">
-              <h1 className="text-6xl md:text-8xl font-bold">
-                <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                  DATA
-                </span>
-                <span className="bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent ml-4">
-                  SAM
-                </span>
-              </h1>
+              <div className="w-full mx-auto flex justify-center items-center">
+                <Image src="/images/logo_v_claro_sombra_final.svg" alt="DataSam" width={400} height={200} />
+              </div>
             </div>
             <p className="text-xl text-muted-foreground mb-8">Todos nuestros enlaces en un solo lugar</p>
           </div>

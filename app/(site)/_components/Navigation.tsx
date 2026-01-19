@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User, LogIn, Settings, Shield, LogOut } from "lucide-react";
 import { useAuth } from "@/app/hooks/useAuth";
+import Image from "next/image";
 
 export const Navigation = () => {
   const { user, isLoading } = useAuth();
@@ -20,8 +21,14 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-2">
             <div className="text-2xl font-bold font-poppins">
-              <span className="text-primary">DATA</span>
-              <span className="text-secondary">SAM</span>
+              <Link href="/">
+                <Image
+                  src="/images/logo_h_claro_final.svg"
+                  alt="DataSam"
+                  width={100}
+                  height={100}
+                />
+              </Link>
             </div>
           </div>
 
@@ -46,7 +53,7 @@ export const Navigation = () => {
             </Link>
           </div>
 
-          {isLoading ? (
+          {/* {isLoading ? (
             <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />
           ) : (
             <DropdownMenu>
@@ -114,7 +121,7 @@ export const Navigation = () => {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
+          )} */}
         </div>
       </div>
     </nav>

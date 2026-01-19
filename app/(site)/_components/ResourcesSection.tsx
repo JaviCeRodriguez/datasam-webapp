@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink } from "lucide-react"
 import { linksHome } from "@/lib/links-data"
 import Link from "next/link"
+import Image from "next/image"
 
 export const ResourcesSection = () => {
   return (
@@ -20,7 +21,15 @@ export const ResourcesSection = () => {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center">
-                      <resource.icon className={`mr-2 h-5 w-5 ${resource.color}`} />
+                      <div className="mr-3 w-6 h-6 relative">
+                        <Image
+                          src={resource.image || "/placeholder.svg"}
+                          alt={resource.name}
+                          width={24}
+                          height={24}
+                          className="rounded"
+                        />
+                      </div>
                       {resource.name}
                     </CardTitle>
                     <ExternalLink className="h-4 w-4 text-muted-foreground" />

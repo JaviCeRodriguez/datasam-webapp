@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
-import { Zap, Star } from "lucide-react"
+import { BookOpen } from "lucide-react"
+import Link from "next/link"
 
 export const CTASection = () => {
   return (
@@ -11,17 +12,20 @@ export const CTASection = () => {
             Conecta con otros estudiantes, comparte conocimientos y crece profesionalmente
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-3">
+            {/* <Button size="lg" className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-3">
               <Zap className="mr-2 h-5 w-5" />
               Únete Ahora
-            </Button>
+            </Button> */}
             <Button
               size="lg"
               variant="outline"
+              asChild
               className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-3 bg-transparent"
             >
-              <Star className="mr-2 h-5 w-5" />
-              Explorar Recursos
+              <Link href="#recursos">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Explorar Recursos
+              </Link>
             </Button>
           </div>
         </div>
