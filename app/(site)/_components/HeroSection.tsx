@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Users, BookOpen, Disc } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useParticles } from "@/app/hooks/useParticles";
 import Image from "next/image";
 
