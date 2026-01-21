@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "Plan de Estudios - DATA SAM",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Plan de Estudios - DATA SAM",
     description:
       "Plan de estudios interactivo de la Licenciatura en Ciencia de Datos de la UNSAM. Haz seguimiento de tu progreso académico.",
-    images: ["/og-image"],
+    images: ["/opengraph-image"],
   },
 };
 

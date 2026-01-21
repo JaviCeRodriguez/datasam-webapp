@@ -1,13 +1,14 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-export const alt = "DATA SAM - Comunidad de Estudiantes de Ciencia de Datos";
+// Image metadata
 export const size = {
   width: 1200,
   height: 630,
 };
+
 export const contentType = "image/png";
 
+// Image generation
 export default async function Image() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000/";
   const logoSrc = `${baseUrl}images/logo_v_claro_sombra_final.png`;
@@ -45,7 +46,6 @@ export default async function Image() {
               marginBottom: "30px",
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={logoSrc}
               alt="DATA SAM Logo"

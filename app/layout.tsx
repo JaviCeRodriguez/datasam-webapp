@@ -55,7 +55,7 @@ export const metadata: Metadata = {
       "Comunidad estudiantil de la Licenciatura en Ciencia de Datos de la UNSAM. Recursos, plan de estudios, materiales y más para estudiantes. Donde el conocimiento se comparte y la comunidad se fortalece 🚀",
     images: [
       {
-        url: "/og-image",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "DATA SAM - Comunidad de Estudiantes de Ciencia de Datos",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     title: "DATA SAM - Comunidad de Estudiantes de Ciencia de Datos",
     description:
       "Comunidad estudiantil de la Licenciatura en Ciencia de Datos de la UNSAM. Recursos, plan de estudios y más para estudiantes 🚀",
-    images: ["/og-image"],
+    images: ["/opengraph-image"],
     creator: "@datasam",
   },
   robots: {
