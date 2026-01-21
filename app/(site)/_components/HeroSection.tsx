@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen } from "lucide-react";
 import { useParticles } from "@/app/hooks/useParticles";
 import Image from "next/image";
+import { stats } from "@/lib/stats";
 
 export const HeroSection = () => {
   const particlesRef = useParticles();
@@ -47,16 +48,16 @@ export const HeroSection = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">600+</div>
-              <div className="text-sm text-muted-foreground">Estudiantes</div>
+              <div className="text-3xl font-bold text-primary">{stats[0].subtitle}</div>
+              <div className="text-sm text-muted-foreground">{stats[0].title}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-secondary">70+ GB</div>
-              <div className="text-sm text-muted-foreground">Recursos</div>
+              <div className="text-3xl font-bold text-secondary">{stats[1].subtitle}</div>
+              <div className="text-sm text-muted-foreground">{stats[1].title}</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-accent">20+</div>
-              <div className="text-sm text-muted-foreground">Materias</div>
+              <div className="text-3xl font-bold text-accent">{stats[2].subtitle}</div>
+              <div className="text-sm text-muted-foreground">{stats[2].title}</div>
             </div>
           </div>
         </div>

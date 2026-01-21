@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { stats } from "@/lib/stats";
 
 // Image metadata
 export const size = {
@@ -92,7 +93,7 @@ export default async function Image() {
                 color: "white",
               }}
             >
-              500+
+              {stats[0].subtitle}
             </div>
             <div
               style={{
@@ -101,7 +102,7 @@ export default async function Image() {
                 marginTop: "8px",
               }}
             >
-              Estudiantes
+              {stats[0].title}
             </div>
           </div>
           <div
@@ -118,7 +119,7 @@ export default async function Image() {
                 color: "white",
               }}
             >
-              50+
+              {stats[1].subtitle}
             </div>
             <div
               style={{
@@ -127,7 +128,7 @@ export default async function Image() {
                 marginTop: "8px",
               }}
             >
-              Recursos
+              {stats[1].title}
             </div>
           </div>
           <div
@@ -144,7 +145,7 @@ export default async function Image() {
                 color: "white",
               }}
             >
-              20+
+              {stats[2].subtitle}
             </div>
             <div
               style={{
@@ -153,7 +154,7 @@ export default async function Image() {
                 marginTop: "8px",
               }}
             >
-              Materias
+              {stats[2].title}
             </div>
           </div>
         </div>
