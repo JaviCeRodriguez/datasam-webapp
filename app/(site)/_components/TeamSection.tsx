@@ -28,12 +28,12 @@ const teamMembers = [
     badgeColor: "bg-secondary",
   },
   {
-    name: "Federico Di Tata",
+    name: "¿Serás vos?",
     role: "Community Manager",
     description:
-      "Trabajé en el soporte técnico de plataformas marketineras de Google (Ads, Analytics). Ahora el equipo pro de lol, los videojuegos son mi pasión. También canto y toco el piano 🎹",
-    image: "/fede.webp",
-    badges: ["Marketing", "Gaming"],
+      "Estamos buscando un nuevo Community Manager para DATA SAM. Si te apasiona construir comunidades y conectar con estudiantes, ¡queremos conocerte!",
+    image: null,
+    badges: [],
     badgeColor: "bg-accent",
   },
 ];
@@ -58,14 +58,18 @@ export const TeamSection = () => {
               key={index}
               className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
             >
-              <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 relative">
-                <Image
-                  src={member.image || "/placeholder.svg"}
-                  alt={member.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+              <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 relative flex items-center justify-center">
+                {member.image ? (
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="text-8xl">🤔</div>
+                )}
                 <div className="absolute top-4 right-4">
                   <Badge className={member.badgeColor}>
                     {member.role.split(" ")[0]}
@@ -80,17 +84,19 @@ export const TeamSection = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   {member.description}
                 </p>
-                <div className="flex gap-2">
-                  {member.badges.map((badge, badgeIndex) => (
-                    <Badge
-                      key={badgeIndex}
-                      variant={badgeIndex === 0 ? "secondary" : "outline"}
-                      className="text-xs"
-                    >
-                      {badge}
-                    </Badge>
-                  ))}
-                </div>
+                {member.badges.length > 0 && (
+                  <div className="flex gap-2">
+                    {member.badges.map((badge, badgeIndex) => (
+                      <Badge
+                        key={badgeIndex}
+                        variant={badgeIndex === 0 ? "secondary" : "outline"}
+                        className="text-xs"
+                      >
+                        {badge}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
