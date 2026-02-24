@@ -27,7 +27,7 @@ Lint/build from root: `pnpm lint`, `pnpm build`.
 
 ### Where components live
 
-- **Theme**: `components/theme-provider.tsx` (wraps next-themes). Use in layout if needed (root layout uses AuthProvider; theme can sit there or in a child layout).
+- **Theme**: `components/theme-provider.tsx` (wraps next-themes). Use in layout if needed (root layout defines global metadata/fonts; theme can sit there or in a child layout).
 - **Primitives**: `components/ui/*` — one file per component (e.g. `button.tsx`, `card.tsx`, `form.tsx`). These are the building blocks; don’t put route-specific composition here.
 
 **Examples:**

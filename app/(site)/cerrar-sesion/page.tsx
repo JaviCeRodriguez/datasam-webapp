@@ -1,8 +1,7 @@
 "use client";
 
-import { useAuth } from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,27 +11,51 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LogOut, Home } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function CerrarSesionPage() {
-  const { user, logout } = useAuth();
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user, router]);
+    const loadUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  const handleLogout = () => {
-    logout();
+      if (!user) {
+        router.push("/");
+        return;
+      }
+
+      setUserName(user.user_metadata?.full_name || user.user_metadata?.name || user.email || "Usuario");
+      setUserEmail(user.email ?? null);
+      setLoading(false);
+    };
+
+    loadUser();
+  }, [router, supabase]);
+
+  const handleLogout = async () => {
+    setIsSubmitting(true);
+    await supabase.auth.signOut();
     router.push("/");
+    router.refresh();
   };
 
   const handleCancel = () => {
     router.back();
   };
 
-  if (!user) {
+  if (loading) {
+    return null;
+  }
+
+  if (!userEmail) {
     return null;
   }
 
@@ -50,9 +73,9 @@ export default function CerrarSesionPage() {
         <CardContent className="space-y-4">
           <div className="text-center p-4 bg-muted/50 rounded-lg">
             <p className="text-sm text-muted-foreground">
-              Sesión actual: <span className="font-medium">{user.name}</span>
+              Sesión actual: <span className="font-medium">{userName}</span>
             </p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+            <p className="text-xs text-muted-foreground">{userEmail}</p>
           </div>
 
           <div className="flex gap-2">
@@ -60,9 +83,10 @@ export default function CerrarSesionPage() {
               onClick={handleLogout}
               variant="destructive"
               className="flex-1"
+              disabled={isSubmitting}
             >
               <LogOut className="h-4 w-4 mr-2" />
-              Cerrar Sesión
+              {isSubmitting ? "Cerrando..." : "Cerrar Sesión"}
             </Button>
             <Button
               onClick={handleCancel}

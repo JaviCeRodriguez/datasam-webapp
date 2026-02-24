@@ -12,40 +12,54 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/app/hooks/useAuth";
 import { Chrome, Mail, Lock } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 function IniciarSesionContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { login } = useAuth();
   const metodo = searchParams.get("metodo") || "password";
+  const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleGoogleLogin = () => {
-    // Simular login con Google
-    const mockUser = {
-      id: "1",
-      name: "Usuario Google",
-      email: "usuario@gmail.com",
-      avatar: "https://via.placeholder.com/40",
-    };
-    login(mockUser);
-    router.push("/");
+  const handleGoogleLogin = async () => {
+    setIsSubmitting(true);
+    setError(null);
+
+    const { error: signInError } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (signInError) {
+      setError(signInError.message);
+      setIsSubmitting(false);
+    }
   };
 
-  const handlePasswordLogin = () => {
-    // Simular login con contraseña
-    const mockUser = {
-      id: "2",
-      name: "Usuario Local",
-      email: email || "usuario@ejemplo.com",
-      avatar: "https://via.placeholder.com/40",
-    };
-    login(mockUser);
+  const handlePasswordLogin = async () => {
+    setIsSubmitting(true);
+    setError(null);
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
+      setIsSubmitting(false);
+      return;
+    }
+
     router.push("/");
+    router.refresh();
   };
 
   return (
@@ -65,10 +79,11 @@ function IniciarSesionContent() {
           {metodo === "google" ? (
             <Button
               onClick={handleGoogleLogin}
+              disabled={isSubmitting}
               className="w-full bg-white hover:bg-gray-50 text-gray-900 border border-gray-300"
             >
               <Chrome className="h-4 w-4 mr-2" />
-              Continuar con Google
+              {isSubmitting ? "Conectando..." : "Continuar con Google"}
             </Button>
           ) : (
             <div className="space-y-4">
@@ -83,6 +98,7 @@ function IniciarSesionContent() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10"
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -97,18 +113,21 @@ function IniciarSesionContent() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10"
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
-              <Button onClick={handlePasswordLogin} className="w-full">
-                Iniciar Sesión
+              <Button onClick={handlePasswordLogin} className="w-full" disabled={isSubmitting || !email || !password}>
+                {isSubmitting ? "Iniciando..." : "Iniciar Sesión"}
               </Button>
             </div>
           )}
 
+          {error ? <p className="text-sm text-destructive text-center">{error}</p> : null}
+
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              Modo desarrollo: Haz clic en cualquier botón para iniciar sesión
+              Usa tu cuenta habilitada en Supabase Auth
             </p>
           </div>
         </CardContent>

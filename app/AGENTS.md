@@ -30,7 +30,7 @@ pnpm lint         # ESLint
 
 - **`(site)`**: Public pages (home, links, materias, formularios, perfil, qr, auth pages). Layout: `app/(site)/layout.tsx` (Navigation + Footer + metadata).
 - **`(dashboard)`**: Admin area with sidebar. Layout: `app/(dashboard)/layout.tsx` (SidebarProvider + AppSidebar).
-- **Root**: `app/layout.tsx` — fonts, `AuthProvider`, global metadata. Do not put route-specific UI here.
+- **Root**: `app/layout.tsx` — fonts and global metadata. Do not put route-specific UI here.
 
 **Examples:**
 
@@ -42,7 +42,7 @@ pnpm lint         # ESLint
 
 - **Pages**: `page.tsx` (and optional `loading.tsx`, `error.tsx`) in the route folder.
 - **Route-local components**: Place in `_components/` or `_componentes/` next to the route (underscore = not a route segment).
-- **App-level hooks/utils**: `app/hooks/`, `app/utils/` (e.g. `useAuth.tsx`, `useSubjectProgress.ts`, `progressCalculations.ts`).
+- **App-level hooks/utils**: `app/hooks/`, `app/utils/` (e.g. `useSubjectProgress.ts`, `progressCalculations.ts`).
 
 **Examples:**
 
@@ -79,10 +79,10 @@ pnpm lint         # ESLint
 
 | Purpose | File(s) |
 |--------|--------|
-| Root layout, fonts, AuthProvider | `app/layout.tsx` |
+| Root layout, fonts | `app/layout.tsx` |
 | Site shell, metadata, JSON-LD | `app/(site)/layout.tsx` |
 | Dashboard shell, sidebar | `app/(dashboard)/layout.tsx`, `app/(dashboard)/_components/AppSidebar.tsx` |
-| Auth (client) | `app/hooks/useAuth.tsx` |
+| Auth (Supabase) | `lib/supabase/client.ts`, `lib/supabase/server.ts`, `app/auth/callback/route.ts` |
 | Subject progress (client) | `app/hooks/useSubjectProgress.ts`, `app/utils/progressCalculations.ts` |
 | Page examples (server) | `app/(dashboard)/admin/formularios/page.tsx`, `app/(dashboard)/admin/page.tsx` |
 | Page examples (client) | `app/(site)/page.tsx`, `app/(site)/materias/page.tsx` |
@@ -109,14 +109,14 @@ rg -n "export (function|const) \w+" app --glob "**/_component*"
 rg -n "metadata|generateMetadata" app/
 
 # Auth usage
-rg -n "useAuth|AuthProvider" app/
+rg -n "supabase|auth" app/ lib/supabase/
 ```
 
 ---
 
 ## 6. Common gotchas
 
-- **Auth**: `AuthProvider` wraps the app in `app/layout.tsx`; client components use `app/hooks/useAuth.tsx`. Any client-only auth vars must use `NEXT_PUBLIC_*` if read in browser.
+- **Auth**: Supabase Auth is used through `lib/supabase/*`; protected routes use `middleware.ts` and server checks in layouts/pages.
 - **Spanish folders**: Some routes use Spanish (`formularios`, `_componentes`, `cerrar-sesion`, `iniciar-sesion`). Keep that convention when adding under the same area.
 - **Loading/errors**: Optional `loading.tsx` and `error.tsx` are supported (e.g. `app/(site)/iniciar-sesion/loading.tsx`, `app/(dashboard)/admin/formularios/[formId]/respuestas/loading.tsx`). Add where you need streaming or error boundaries.
 

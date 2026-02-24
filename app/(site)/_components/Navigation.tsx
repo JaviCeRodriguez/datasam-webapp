@@ -9,11 +9,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogIn, Settings, Shield, LogOut } from "lucide-react";
-import { useAuth } from "@/app/hooks/useAuth";
 import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export const Navigation = () => {
-  const { user, isLoading } = useAuth();
+  const supabase = useMemo(() => createClient(), []);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setUser(user);
+      setIsLoading(false);
+    };
+
+    loadUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || "Usuario";
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -53,7 +81,7 @@ export const Navigation = () => {
             </Link>
           </div>
 
-          {/* {isLoading ? (
+          {isLoading ? (
             <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />
           ) : (
             <DropdownMenu>
@@ -70,7 +98,7 @@ export const Navigation = () => {
                 {user ? (
                   <>
                     <div className="px-2 py-1.5 text-sm font-medium">
-                      {user.name}
+                      {displayName}
                     </div>
                     <div className="px-2 py-1.5 text-xs text-muted-foreground">
                       {user.email}
@@ -121,7 +149,7 @@ export const Navigation = () => {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-          )} */}
+          )}
         </div>
       </div>
     </nav>

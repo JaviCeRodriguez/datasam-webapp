@@ -55,10 +55,10 @@ No separate apps, services, or workers; one app with (site) and (dashboard) rout
 
 ### Code organization
 
-- **App Router**: Route groups `(site)` (public) and `(dashboard)` (admin/sidebar). Layouts per group; root layout in `app/layout.tsx` with fonts and `AuthProvider`.
+- **App Router**: Route groups `(site)` (public) and `(dashboard)` (admin/sidebar). Layouts per group; root layout in `app/layout.tsx` with fonts and global metadata.
 - **Colocated components**: Route-specific components in `_components/` or `_componentes/` next to the route (e.g. `app/(site)/_components/`, `app/(dashboard)/admin/formularios/_componentes/`).
 - **Shared UI**: `components/ui/` (shadcn); `components/theme-provider.tsx`. Use `@/components/*` and `@/lib/utils` (`cn()`).
-- **Data layer**: `db/` for schema and client; `lib/` for stores and static data; no API route layer yet (mock data in some admin components).
+- **Data layer**: Supabase SDK clients in `lib/supabase/`; `db/` currently retains SQL migration history; `lib/` for stores and static data.
 
 ### Conventions
 
@@ -73,8 +73,8 @@ No separate apps, services, or workers; one app with (site) and (dashboard) rout
 - **Dashboard shell**: `app/(dashboard)/layout.tsx`, `app/(dashboard)/_components/AppSidebar.tsx`
 - **Page pattern (server)**: `app/(dashboard)/admin/formularios/page.tsx`
 - **Page pattern (client)**: `app/(site)/page.tsx`, `app/(site)/materias/page.tsx`
-- **Auth**: `app/hooks/useAuth.tsx` (client), used in root layout
-- **DB client**: `db/index.ts`; schema `db/schema.ts`
+- **Auth**: Supabase Auth via `lib/supabase/*` + OAuth callback route `app/auth/callback/route.ts`
+- **DB access**: Supabase SDK clients (`lib/supabase/client.ts`, `lib/supabase/server.ts`, `lib/supabase/middleware.ts`)
 - **UI utility**: `lib/utils.ts` (`cn()`); design system config `components.json`
 
 ### Anti-patterns to avoid

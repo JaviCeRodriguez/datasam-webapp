@@ -7,7 +7,7 @@
 ## 1. Project Snapshot
 
 - **Repo type**: Simple single project (Next.js app). `pnpm-workspace.yaml` exists for future `packages/*` but no packages yet.
-- **Stack**: Next.js 15, React 19, TypeScript (strict), Drizzle ORM + Postgres, Tailwind CSS 4, shadcn/ui (new-york), Zustand, react-hook-form + Zod.
+- **Stack**: Next.js 15, React 19, TypeScript (strict), Supabase SDK (Auth + Postgres), Tailwind CSS 4, shadcn/ui (new-york), Zustand, react-hook-form + Zod.
 - **Sub-guides**: `app/AGENTS.md`, `db/AGENTS.md`, `components/AGENTS.md` — open these for package-specific patterns.
 
 ---
@@ -20,7 +20,7 @@ pnpm build
 pnpm lint
 ```
 
-No dedicated test script; typecheck is via `next build` (TypeScript). Database: `pnpm db:generate`, `pnpm db:migrate`, `pnpm db:seed`, `pnpm db:assign-role`.
+No dedicated test script; typecheck is via `next build` (TypeScript).
 
 ---
 
@@ -34,8 +34,8 @@ No dedicated test script; typecheck is via `next build` (TypeScript). Database: 
 
 ## 4. Security & Secrets
 
-- **Never commit** `.env*` (in `.gitignore`). Use `.env.local` for `DATABASE_URL`, `NEXT_PUBLIC_*` for client-safe values.
-- **PII**: Handle user data only where needed; DB schema lives in `db/schema.ts`.
+- **Never commit** `.env*` (in `.gitignore`). Use `.env.local` for `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and server-only `SUPABASE_SERVICE_ROLE_KEY` when needed.
+- **PII**: Handle user data only where needed; DB schema and policies are managed in Supabase SQL migrations.
 
 ---
 

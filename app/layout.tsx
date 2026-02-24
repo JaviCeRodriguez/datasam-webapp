@@ -1,7 +1,6 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
-import { AuthProvider } from "./hooks/useAuth";
 import "./globals.css";
 
 const inter = Inter({
@@ -93,9 +92,7 @@ export default function RootLayout({
       lang="es"
       className={`${inter.variable} ${poppins.variable} antialiased`}
     >
-      <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

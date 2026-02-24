@@ -1,8 +1,3 @@
-"use client";
-
-import { useAuth } from "@/app/hooks/useAuth";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -14,28 +9,25 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { User, Mail, Calendar, Settings } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function PerfilPage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/iniciar-sesion");
-    }
-  }, [user, isLoading, router]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+export default async function PerfilPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    return null;
+    redirect("/iniciar-sesion");
   }
+
+  const displayName =
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    user.email ||
+    "Usuario";
+  const avatarUrl = user.user_metadata?.avatar_url || "/placeholder.svg";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12">
@@ -61,14 +53,11 @@ export default function PerfilPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage
-                    src={user.avatar || "/placeholder.svg"}
-                    alt={user.name}
-                  />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={avatarUrl} alt={displayName} />
+                  <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="text-lg font-semibold">{user.name}</h3>
+                  <h3 className="text-lg font-semibold">{displayName}</h3>
                   <p className="text-muted-foreground flex items-center gap-1">
                     <Mail className="h-4 w-4" />
                     {user.email}
@@ -85,7 +74,7 @@ export default function PerfilPage() {
                   Miembro desde: Enero 2024
                 </Badge>
                 <Badge variant="outline" className="w-fit">
-                  {user.email.includes("@unsam.edu.ar")
+                  {user.email?.includes("@unsam.edu.ar")
                     ? "Estudiante UNSAM"
                     : "Usuario Externo"}
                 </Badge>
