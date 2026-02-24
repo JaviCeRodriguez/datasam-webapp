@@ -19,6 +19,8 @@ export interface Subject {
 export const useSubjectProgress = () => {
   const subjectProgress = useSubjectProgressStore((state: SubjectProgressState) => state.subjectProgress)
   const updateSubjectStatus = useSubjectProgressStore((state: SubjectProgressState) => state.updateSubjectStatus)
+  const setSubjectProgress = useSubjectProgressStore((state: SubjectProgressState) => state.setSubjectProgress)
+  const resetProgress = useSubjectProgressStore((state: SubjectProgressState) => state.resetProgress)
 
   const canTakeSubject = (subject: Subject) => {
     if (!subject.correlativas) return true
@@ -28,6 +30,8 @@ export const useSubjectProgress = () => {
   return {
     subjectProgress,
     updateSubjectStatus,
+    setSubjectProgress,
+    resetProgress,
     canTakeSubject,
   }
 }
