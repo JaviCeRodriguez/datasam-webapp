@@ -51,6 +51,11 @@ No dedicated test script; typecheck is via `next build` (TypeScript).
 | Shared logic, stores, data | `lib/` | — (no AGENTS.md; see app/db for usage) |
 | Root-level hooks | `hooks/` | — |
 
+### Additional guidance files
+
+- Cursor rules live under `.cursor/rules/`.
+- Sentry guidance for this project: `.cursor/rules/sentry-nextjs-rules.md`.
+
 ### Quick find commands
 
 ```bash
