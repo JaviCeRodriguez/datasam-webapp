@@ -7,6 +7,7 @@
 - [Antes de Empezar](#antes-de-empezar)
 - [Requisitos Previos](#requisitos-previos)
 - [Instalación](#instalación)
+- [Configuración de Supabase](#configuración-de-supabase)
 - [Ejecutar el Proyecto](#ejecutar-el-proyecto)
 - [Uso de Inteligencia Artificial](#uso-de-inteligencia-artificial)
 - [Comandos Útiles](#comandos-útiles)
@@ -101,6 +102,45 @@ pnpm install
 ```
 
 Este proceso puede tardar unos minutos. ¡Ten paciencia! ☕
+
+## 🧩 Configuración de Supabase
+
+Para que la página de perfil funcione correctamente (edición de perfil, avatar y cuentas vinculadas), configura estos puntos en tu proyecto de Supabase:
+
+### 1) Bucket público `avatars`
+
+1. Ve a **Storage → Buckets → New bucket**.
+2. Nombre del bucket: `avatars`.
+3. Activa **Public bucket**.
+4. En la configuración del bucket, limita tipos de archivo a:
+   - `image/jpeg`
+   - `image/png`
+   - `image/webp`
+5. Define **File size limit** en `2 MB`.
+
+> En la app también existe validación de tamaño/tipo antes de subir archivo.
+
+### 2) Providers de Auth para vinculación de cuentas
+
+1. Ve a **Authentication → Providers**.
+2. Asegúrate de tener **Google** habilitado.
+3. Habilita **Manual Linking** (Identity Linking) para permitir vincular otra cuenta Google desde perfil.
+
+### 3) Redirect URLs
+
+En **Authentication → URL Configuration**, agrega:
+
+- `http://localhost:3000/auth/callback`
+- Tu URL de producción equivalente (por ejemplo: `https://tu-dominio.com/auth/callback`)
+
+### 4) Variables de entorno
+
+En `.env.local`, verifica:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
 
 ## 🎮 Ejecutar el Proyecto
 

@@ -5,13 +5,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, Calendar, Settings } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { getUserAvatarUrl } from "@/lib/supabase/user";
+import { getUserAvatarUrlWithOptions, getUserDisplayName } from "@/lib/supabase/user";
 import { redirect } from "next/navigation";
+import { ProfileEditor } from "./_components/ProfileEditor";
+import type { UserIdentity } from "@supabase/supabase-js";
+
+type UserProfileRow = {
+  name: string | null;
+  surname: string | null;
+  avatar_url: string | null;
+  primary_identity_id: string | null;
+  created_at: string | null;
+};
 
 export default async function PerfilPage() {
   const supabase = await createClient();
@@ -23,12 +31,17 @@ export default async function PerfilPage() {
     redirect("/iniciar-sesion");
   }
 
-  const displayName =
-    user.user_metadata?.full_name ||
-    user.user_metadata?.name ||
-    user.email ||
-    "Usuario";
-  const avatarUrl = getUserAvatarUrl(user) || "/placeholder.svg";
+  const { data: profile } = await supabase
+    .from("users")
+    .select("name, surname, avatar_url, primary_identity_id, created_at")
+    .eq("id", user.id)
+    .maybeSingle<UserProfileRow>();
+
+  const displayName = getUserDisplayName(user, profile);
+  const avatarUrl = getUserAvatarUrlWithOptions(user, { profile }) || "/placeholder.svg";
+  const createdDate = profile?.created_at ?? user.created_at;
+
+  const initialIdentities = (user.identities ?? []) as UserIdentity[];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12">
@@ -38,109 +51,35 @@ export default async function PerfilPage() {
             Mi Perfil
           </h1>
           <p className="text-muted-foreground mt-2">
-            Gestiona tu información personal y preferencias
+            Gestiona tu información personal y cuentas vinculadas
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Información Personal
-              </CardTitle>
-              <CardDescription>Tu información básica de perfil</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={avatarUrl} alt={displayName} />
-                  <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-lg font-semibold">{displayName}</h3>
-                  <p className="text-muted-foreground flex items-center gap-1">
-                    <Mail className="h-4 w-4" />
-                    {user.email}
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Badge
-                  variant="secondary"
-                  className="flex items-center gap-1 w-fit"
-                >
-                  <Calendar className="h-3 w-3" />
-                  Miembro desde: Enero 2024
-                </Badge>
-                <Badge variant="outline" className="w-fit">
-                  {user.email?.includes("@unsam.edu.ar")
-                    ? "Estudiante UNSAM"
-                    : "Usuario Externo"}
-                </Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Configuración
-              </CardTitle>
-              <CardDescription>Personaliza tu experiencia</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-transparent"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Editar Perfil
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-transparent"
-              >
-                <Mail className="h-4 w-4 mr-2" />
-                Cambiar Email
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start bg-transparent"
-              >
-                Preferencias de Notificaciones
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        <ProfileEditor
+          userId={user.id}
+          email={user.email ?? ""}
+          initialName={profile?.name ?? ""}
+          initialSurname={profile?.surname ?? ""}
+          initialAvatarUrl={avatarUrl === "/placeholder.svg" ? null : avatarUrl}
+          initialPrimaryIdentityId={profile?.primary_identity_id ?? null}
+          initialIdentities={initialIdentities}
+        />
 
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Progreso Académico</CardTitle>
-            <CardDescription>Tu avance en el plan de estudios</CardDescription>
+            <CardTitle>Resumen de Perfil</CardTitle>
+            <CardDescription>Información visible para tu usuario actual</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="text-center p-4 bg-primary/5 rounded-lg">
-                <div className="text-2xl font-bold text-primary">24</div>
-                <div className="text-sm text-muted-foreground">
-                  Materias Aprobadas
-                </div>
-              </div>
-              <div className="text-center p-4 bg-secondary/5 rounded-lg">
-                <div className="text-2xl font-bold text-secondary">8</div>
-                <div className="text-sm text-muted-foreground">
-                  Materias Pendientes
-                </div>
-              </div>
-              <div className="text-center p-4 bg-green-500/5 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">75%</div>
-                <div className="text-sm text-muted-foreground">
-                  Progreso Total
-                </div>
-              </div>
+          <CardContent className="space-y-3">
+            <p className="text-sm font-medium">{displayName}</p>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="flex items-center gap-1 w-fit">
+                <Calendar className="h-3 w-3" />
+                Miembro desde: {createdDate ? new Date(createdDate).toLocaleDateString("es-AR") : "-"}
+              </Badge>
+              <Badge variant="outline" className="w-fit">
+                {user.email?.includes("@unsam.edu.ar") ? "Estudiante UNSAM" : "Usuario Externo"}
+              </Badge>
             </div>
           </CardContent>
         </Card>

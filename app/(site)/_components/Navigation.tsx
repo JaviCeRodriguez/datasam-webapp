@@ -13,18 +13,36 @@ import { User, LogIn, Settings, Shield, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { getUserAvatarUrl } from "@/lib/supabase/user";
+import { getUserAvatarUrlWithOptions, getUserDisplayName } from "@/lib/supabase/user";
 import { getUserRolesAction } from "@/lib/supabase/get-user-roles";
 import { ADMIN_ALLOWED_ROLES } from "@/lib/role-constants";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
+type UserProfileRow = {
+  name: string | null;
+  surname: string | null;
+  avatar_url: string | null;
+  primary_identity_id: string | null;
+};
+
 export const Navigation = () => {
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<UserProfileRow | null>(null);
   const [roleNames, setRoleNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const loadProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from("users")
+        .select("name, surname, avatar_url, primary_identity_id")
+        .eq("id", userId)
+        .maybeSingle<UserProfileRow>();
+
+      setProfile(data ?? null);
+    };
+
     const loadUser = async () => {
       const {
         data: { user },
@@ -36,6 +54,9 @@ export const Navigation = () => {
       if (user?.id) {
         const roles = await getUserRolesAction(user.id);
         setRoleNames(roles);
+        await loadProfile(user.id);
+      } else {
+        setProfile(null);
       }
 
       setIsLoading(false);
@@ -51,8 +72,10 @@ export const Navigation = () => {
       if (session?.user?.id) {
         const roles = await getUserRolesAction(session.user.id);
         setRoleNames(roles);
+        await loadProfile(session.user.id);
       } else {
         setRoleNames([]);
+        setProfile(null);
       }
 
       setIsLoading(false);
@@ -61,8 +84,8 @@ export const Navigation = () => {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || "Usuario";
-  const avatarUrl = getUserAvatarUrl(user);
+  const displayName = getUserDisplayName(user, profile);
+  const avatarUrl = getUserAvatarUrlWithOptions(user, { profile });
   const canAccessAdmin = roleNames.some((role) => ADMIN_ALLOWED_ROLES.has(role));
 
   return (
