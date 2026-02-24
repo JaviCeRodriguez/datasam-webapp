@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,7 @@ import { User, LogIn, Settings, Shield, LogOut } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { getUserAvatarUrl } from "@/lib/supabase/user";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export const Navigation = () => {
@@ -42,6 +44,7 @@ export const Navigation = () => {
   }, [supabase]);
 
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || "Usuario";
+  const avatarUrl = getUserAvatarUrl(user);
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -87,11 +90,14 @@ export const Navigation = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <User
-                    className={
-                      user ? "h-5 w-5 text-blue-500" : "h-5 w-5 text-red-500"
-                    }
-                  />
+                  {user ? (
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
+                      <AvatarFallback>{displayName.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <User className="h-5 w-5 text-red-500" />
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">

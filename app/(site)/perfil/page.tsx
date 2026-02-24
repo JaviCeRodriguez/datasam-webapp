@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { User, Mail, Calendar, Settings } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { getUserAvatarUrl } from "@/lib/supabase/user";
 import { redirect } from "next/navigation";
 
 export default async function PerfilPage() {
@@ -27,7 +28,7 @@ export default async function PerfilPage() {
     user.user_metadata?.name ||
     user.email ||
     "Usuario";
-  const avatarUrl = user.user_metadata?.avatar_url || "/placeholder.svg";
+  const avatarUrl = getUserAvatarUrl(user) || "/placeholder.svg";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12">
