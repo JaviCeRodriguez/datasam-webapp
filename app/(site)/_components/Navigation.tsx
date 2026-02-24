@@ -14,11 +14,14 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getUserAvatarUrl } from "@/lib/supabase/user";
+import { getUserRolesAction } from "@/lib/supabase/get-user-roles";
+import { ADMIN_ALLOWED_ROLES } from "@/lib/role-constants";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export const Navigation = () => {
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [roleNames, setRoleNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,6 +31,13 @@ export const Navigation = () => {
       } = await supabase.auth.getUser();
 
       setUser(user);
+
+      // Fetch user roles if authenticated
+      if (user?.id) {
+        const roles = await getUserRolesAction(user.id);
+        setRoleNames(roles);
+      }
+
       setIsLoading(false);
     };
 
@@ -35,8 +45,16 @@ export const Navigation = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
+
+      if (session?.user?.id) {
+        const roles = await getUserRolesAction(session.user.id);
+        setRoleNames(roles);
+      } else {
+        setRoleNames([]);
+      }
+
       setIsLoading(false);
     });
 
@@ -45,6 +63,7 @@ export const Navigation = () => {
 
   const displayName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email || "Usuario";
   const avatarUrl = getUserAvatarUrl(user);
+  const canAccessAdmin = roleNames.some((role) => ADMIN_ALLOWED_ROLES.has(role));
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -115,12 +134,14 @@ export const Navigation = () => {
                         Ver perfil
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin" className="flex items-center">
-                        <Shield className="h-4 w-4 mr-2" />
-                        Ir al dashboard
-                      </Link>
-                    </DropdownMenuItem>
+                    {canAccessAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="flex items-center">
+                          <Shield className="h-4 w-4 mr-2" />
+                          Ir al dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
                       <Link
                         href="/cerrar-sesion"

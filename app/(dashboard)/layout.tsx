@@ -2,6 +2,7 @@ import type React from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/AppSidebar";
 import { createClient } from "@/lib/supabase/server";
+import { canAccessAdmin, getUserRoleNamesCached } from "@/lib/supabase/roles";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
@@ -16,6 +17,13 @@ export default async function DashboardLayout({
 
   if (!user) {
     redirect("/iniciar-sesion?metodo=google");
+  }
+
+  const roleNames = await getUserRoleNamesCached(user.id);
+  const isAllowed = canAccessAdmin(roleNames);
+
+  if (!isAllowed) {
+    redirect("/unauthorized");
   }
 
   return (
