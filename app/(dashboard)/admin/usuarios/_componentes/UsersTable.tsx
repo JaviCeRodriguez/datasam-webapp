@@ -1,60 +1,16 @@
-"use client"
-
-import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { MoreHorizontal, Mail, User } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Mail, User } from "lucide-react"
+import type { AdminUserItem } from "../../_lib/admin-types"
 
-// Mock data - en el futuro esto vendrá de una API
-const mockUsers = [
-  {
-    id: 1,
-    name: "Ana García",
-    email: "ana.garcia@unsam.edu.ar",
-    avatar: "/portrait-woman.png",
-    isUnsam: true,
-    registeredAt: "2024-01-15",
-  },
-  {
-    id: 2,
-    name: "Carlos Rodríguez",
-    email: "carlos.rodriguez@gmail.com",
-    avatar: "/carlos-rodriguez-portrait.png",
-    isUnsam: false,
-    registeredAt: "2024-01-20",
-  },
-  {
-    id: 3,
-    name: "María López",
-    email: "maria.lopez@unsam.edu.ar",
-    avatar: "/portrait-maria-lopez.png",
-    isUnsam: true,
-    registeredAt: "2024-02-01",
-  },
-  {
-    id: 4,
-    name: "Juan Pérez",
-    email: "juan.perez@hotmail.com",
-    avatar: "/portrait-juan-perez.png",
-    isUnsam: false,
-    registeredAt: "2024-02-10",
-  },
-  {
-    id: 5,
-    name: "Laura Martínez",
-    email: "laura.martinez@unsam.edu.ar",
-    avatar: "/laura-martinez-portrait.png",
-    isUnsam: true,
-    registeredAt: "2024-02-15",
-  },
-]
+type UsersTableProps = {
+  users: AdminUserItem[]
+  total: number
+}
 
-export function UsersTable() {
-  const [users] = useState(mockUsers)
+export function UsersTable({ users, total }: UsersTableProps) {
 
   const getInitials = (name: string) => {
     return name
@@ -64,12 +20,24 @@ export function UsersTable() {
       .toUpperCase()
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("es-AR", {
+  const formatDate = (dateIso: string) => {
+    return new Date(dateIso).toLocaleDateString("es-AR", {
       year: "numeric",
       month: "short",
       day: "numeric",
     })
+  }
+
+  const getProviderLabel = (provider: string) => {
+    if (provider === "google") {
+      return "Google"
+    }
+
+    if (provider === "email") {
+      return "Email"
+    }
+
+    return provider
   }
 
   return (
@@ -77,18 +45,20 @@ export function UsersTable() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <User className="h-5 w-5" />
-          Lista de Usuarios ({users.length})
+          Lista de Usuarios ({total})
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {users.length === 0 && <p className="text-sm text-muted-foreground">No se encontraron usuarios para esa búsqueda.</p>}
+
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Usuario</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Tipo</TableHead>
+              <TableHead>UNSAM</TableHead>
+              <TableHead>Cuentas vinculadas</TableHead>
               <TableHead>Registro</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,13 +67,13 @@ export function UsersTable() {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                      <AvatarImage src="/placeholder.svg" alt={user.fullName} />
                       <AvatarFallback className="bg-gradient-to-br from-primary/20 to-secondary/20">
-                        {getInitials(user.name)}
+                        {getInitials(user.fullName)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">{user.name}</div>
+                      <div className="font-medium">{user.fullName}</div>
                     </div>
                   </div>
                 </TableCell>
@@ -121,21 +91,18 @@ export function UsersTable() {
                     {user.isUnsam ? "UNSAM" : "Externo"}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">{formatDate(user.registeredAt)}</TableCell>
                 <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-                      <DropdownMenuItem>Enviar mensaje</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">Suspender usuario</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <div className="flex flex-wrap gap-1">
+                    {user.linkedProviders.length === 0 && <Badge variant="outline">Sin sincronizar</Badge>}
+                    {user.linkedProviders.map((provider) => (
+                      <Badge key={provider} variant={provider === user.primaryProvider ? "default" : "secondary"}>
+                        {getProviderLabel(provider)}
+                        {provider === user.primaryProvider ? " (principal)" : ""}
+                      </Badge>
+                    ))}
+                  </div>
                 </TableCell>
+                <TableCell className="text-sm text-muted-foreground">{formatDate(user.createdAt)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

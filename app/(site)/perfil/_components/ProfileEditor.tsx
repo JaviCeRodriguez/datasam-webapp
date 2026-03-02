@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { Link2, Mail, Save, Upload, User } from "lucide-react";
-import { setPrimaryIdentityAction, updateProfileAction } from "../actions";
+import { setPrimaryIdentityAction, syncIdentityProvidersAction, updateProfileAction } from "../actions";
 import type { UserIdentity } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
@@ -95,6 +95,8 @@ export function ProfileEditor({
     const nextIdentities = (data?.identities ?? []) as IdentityRecord[];
     setIdentities(nextIdentities);
 
+    await syncIdentityProvidersAction();
+
     if (primaryIdentityId && !nextIdentities.some((identity) => identity.identity_id === primaryIdentityId)) {
       setPrimaryIdentityId(null);
       await setPrimaryIdentityAction(null);
@@ -108,6 +110,10 @@ export function ProfileEditor({
 
     setIsRefreshingIdentities(false);
   };
+
+  useEffect(() => {
+    void syncIdentityProvidersAction();
+  }, []);
 
   const handleSaveProfile = async () => {
     setIsSavingProfile(true);

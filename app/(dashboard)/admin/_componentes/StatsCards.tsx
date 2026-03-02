@@ -1,42 +1,59 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, BookOpen, TrendingUp, Award } from "lucide-react"
+import type { AdminStats } from "../_lib/admin-types"
+import { Users, BookOpen, TrendingUp } from "lucide-react"
 
-const stats = [
-  {
-    title: "Estudiantes Activos",
-    value: "1,234",
-    change: "+12%",
-    icon: Users,
-    color: "from-blue-500 to-cyan-500",
-  },
-  {
-    title: "Materias Disponibles",
-    value: "45",
-    change: "+3",
-    icon: BookOpen,
-    color: "from-primary to-secondary",
-  },
-  {
-    title: "Tasa de Aprobación",
-    value: "87%",
-    change: "+5%",
-    icon: TrendingUp,
-    color: "from-green-500 to-emerald-500",
-  },
-  {
-    title: "Certificados Emitidos",
-    value: "892",
-    change: "+23",
-    icon: Award,
-    color: "from-orange-500 to-red-500",
-  },
-]
+type StatsCardsProps = {
+  stats: AdminStats
+}
 
-export function StatsCards() {
+function formatPercent(value: number | null) {
+  if (value === null) {
+    return "-"
+  }
+
+  return `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`
+}
+
+function formatRate(value: number | null) {
+  if (value === null) {
+    return "-"
+  }
+
+  return `${value.toFixed(1)}%`
+}
+
+export function StatsCards({ stats }: StatsCardsProps) {
+  const cards = [
+    {
+      title: "Estudiantes Activos",
+      value: stats.activeStudents.toLocaleString("es-AR"),
+      change: formatPercent(stats.activeGrowthPercent),
+      helper: "vs mes anterior",
+      icon: Users,
+      color: "from-primary to-secondary",
+    },
+    {
+      title: "Materias Disponibles",
+      value: stats.availableSubjects.toLocaleString("es-AR"),
+      change: "catálogo",
+      helper: "tabla subjects",
+      icon: BookOpen,
+      color: "from-secondary to-accent",
+    },
+    {
+      title: "Tasa de Aprobación",
+      value: formatRate(stats.annualApprovalCalendarRate),
+      change: `Académica: ${formatRate(stats.annualApprovalAcademicRate)}`,
+      helper: `Calendario ${stats.calendarYear}`,
+      icon: TrendingUp,
+      color: "from-accent to-primary",
+    },
+  ]
+
   return (
     <>
-      {stats.map((stat, index) => (
-        <Card key={index} className="relative overflow-hidden border-border/40">
+      {cards.map((stat) => (
+        <Card key={stat.title} className="relative overflow-hidden border-border/40">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
             <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
@@ -46,7 +63,7 @@ export function StatsCards() {
           <CardContent>
             <div className="text-2xl font-bold">{stat.value}</div>
             <p className="text-xs text-muted-foreground">
-              <span className="text-green-600">{stat.change}</span> desde el mes pasado
+              <span className="text-primary">{stat.change}</span> {stat.helper}
             </p>
           </CardContent>
         </Card>
