@@ -43,42 +43,73 @@ export const Navigation = () => {
       setProfile(data ?? null);
     };
 
+    const syncUrlFromOAuth = async () => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+
+      if (!code) {
+        return;
+      }
+
+      await supabase.auth.exchangeCodeForSession(code);
+
+      url.searchParams.delete("code");
+      url.searchParams.delete("state");
+      url.searchParams.delete("scope");
+      url.searchParams.delete("authuser");
+      url.searchParams.delete("prompt");
+
+      window.history.replaceState({}, "", url.toString());
+    };
+
+    const hydrateUserState = async (nextUser: SupabaseUser | null) => {
+      setUser(nextUser);
+
+      if (!nextUser?.id) {
+        setRoleNames([]);
+        setProfile(null);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(false);
+
+      const [rolesResult, profileResult] = await Promise.allSettled([
+        getUserRolesAction(nextUser.id),
+        loadProfile(nextUser.id),
+      ]);
+
+      if (rolesResult.status === "fulfilled") {
+        setRoleNames(rolesResult.value);
+      } else {
+        setRoleNames([]);
+      }
+
+      if (profileResult.status === "rejected") {
+        setProfile(null);
+      }
+    };
+
     const loadUser = async () => {
+      await syncUrlFromOAuth();
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
-      setUser(user);
-
-      // Fetch user roles if authenticated
-      if (user?.id) {
-        const roles = await getUserRolesAction(user.id);
-        setRoleNames(roles);
-        await loadProfile(user.id);
-      } else {
-        setProfile(null);
-      }
-
-      setIsLoading(false);
+      await hydrateUserState(user);
     };
 
-    loadUser();
+    void loadUser();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-
-      if (session?.user?.id) {
-        const roles = await getUserRolesAction(session.user.id);
-        setRoleNames(roles);
-        await loadProfile(session.user.id);
-      } else {
-        setRoleNames([]);
-        setProfile(null);
-      }
-
-      setIsLoading(false);
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      void hydrateUserState(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();

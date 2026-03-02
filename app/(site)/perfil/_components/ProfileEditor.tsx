@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -12,15 +12,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
-import { Link2, Mail, Save, Upload, User } from "lucide-react";
-import { setPrimaryIdentityAction, syncIdentityProvidersAction, updateProfileAction } from "../actions";
+import { Link2, Lock, Mail, Save, Upload, User } from "lucide-react";
+import {
+  linkEmailPasswordAction,
+  setPrimaryIdentityAction,
+  syncIdentityProvidersAction,
+  updateProfileAction,
+} from "../actions";
 import type { UserIdentity } from "@supabase/supabase-js";
 import { toast } from "sonner";
 
 type IdentityRecord = UserIdentity;
+type SupportedProvider = "email" | "google";
 
 type ProfileEditorProps = {
   userId: string;
@@ -30,15 +45,50 @@ type ProfileEditorProps = {
   initialAvatarUrl: string | null;
   initialPrimaryIdentityId: string | null;
   initialIdentities: IdentityRecord[];
+  initialLinkedProviders: string[];
 };
 
 const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024;
 const ALLOWED_AVATAR_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
+function normalizeProvider(value: unknown): SupportedProvider | null {
+  if (value === "google" || value === "email") {
+    return value;
+  }
+
+  return null;
+}
+
+function normalizeLinkedProviders(values: string[]): SupportedProvider[] {
+  const unique = new Set<SupportedProvider>();
+
+  for (const value of values) {
+    const provider = normalizeProvider(value);
+    if (provider) {
+      unique.add(provider);
+    }
+  }
+
+  return Array.from(unique);
+}
+
+function getIdentityId(identity: IdentityRecord): string | null {
+  if (typeof identity.identity_id === "string") {
+    return identity.identity_id;
+  }
+
+  if (typeof identity.id === "string") {
+    return identity.id;
+  }
+
+  return null;
+}
+
 function getIdentityLabel(identity: IdentityRecord): string {
   const email = identity.identity_data?.email;
   const name = identity.identity_data?.full_name ?? identity.identity_data?.name;
-  const provider = identity.provider === "google" ? "Google" : "Email";
+  const normalizedProvider = normalizeProvider(identity.provider);
+  const provider = normalizedProvider === "google" ? "Google" : normalizedProvider === "email" ? "Email" : "Cuenta";
 
   if (email && name) {
     return `${provider}: ${name} (${email})`;
@@ -59,6 +109,7 @@ export function ProfileEditor({
   initialAvatarUrl,
   initialPrimaryIdentityId,
   initialIdentities,
+  initialLinkedProviders,
 }: ProfileEditorProps) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -68,26 +119,40 @@ export function ProfileEditor({
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
   const [avatarCacheBust, setAvatarCacheBust] = useState(0);
   const [identities, setIdentities] = useState<IdentityRecord[]>(initialIdentities);
+  const [linkedProviders, setLinkedProviders] = useState<SupportedProvider[]>(
+    normalizeLinkedProviders(initialLinkedProviders)
+  );
   const [primaryIdentityId, setPrimaryIdentityId] = useState(initialPrimaryIdentityId);
+  const [isEmailLinkModalOpen, setIsEmailLinkModalOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isLinkingGoogle, setIsLinkingGoogle] = useState(false);
+  const [isLinkingEmailPassword, setIsLinkingEmailPassword] = useState(false);
   const [isUpdatingPrimary, setIsUpdatingPrimary] = useState(false);
   const [isRefreshingIdentities, setIsRefreshingIdentities] = useState(false);
 
-  const googleIdentityCount = identities.filter((identity) => identity.provider === "google").length;
+  const hasGoogleProvider = linkedProviders.includes("google");
+  const hasEmailProvider = linkedProviders.includes("email");
+  const visibleIdentities = identities.filter((identity) => {
+    const provider = normalizeProvider(identity.provider);
+    return provider ? linkedProviders.includes(provider) : false;
+  });
   const fullName = `${name} ${surname}`.trim() || email;
   const avatarDisplayUrl = avatarUrl ? `${avatarUrl}${avatarCacheBust > 0 ? `?v=${avatarCacheBust}` : ""}` : null;
 
-  const refreshIdentities = async (notifyOnSuccess = false) => {
+  const refreshIdentities = async (notifyOnSuccess = false, silent = false) => {
     setIsRefreshingIdentities(true);
-    const toastId = toast.loading("Actualizando cuentas vinculadas...");
+    const toastId = silent ? null : toast.loading("Actualizando cuentas vinculadas...");
 
     const { data, error } = await supabase.auth.getUserIdentities();
 
     if (error) {
-      toast.error("No se pudieron actualizar las cuentas vinculadas.", { id: toastId });
+      if (toastId) {
+        toast.error("No se pudieron actualizar las cuentas vinculadas.", { id: toastId });
+      }
       setIsRefreshingIdentities(false);
       return;
     }
@@ -95,25 +160,44 @@ export function ProfileEditor({
     const nextIdentities = (data?.identities ?? []) as IdentityRecord[];
     setIdentities(nextIdentities);
 
-    await syncIdentityProvidersAction();
+    const syncResult = await syncIdentityProvidersAction();
 
-    if (primaryIdentityId && !nextIdentities.some((identity) => identity.identity_id === primaryIdentityId)) {
+    if (!syncResult.ok) {
+      if (toastId) {
+        toast.error(syncResult.message, { id: toastId });
+      }
+      setIsRefreshingIdentities(false);
+      return;
+    }
+
+    const nextLinkedProviders = normalizeLinkedProviders(syncResult.linkedProviders ?? []);
+    setLinkedProviders(nextLinkedProviders);
+
+    const visibleIdentityIds = new Set(
+      nextIdentities
+        .filter((identity) => {
+          const provider = normalizeProvider(identity.provider);
+          return provider ? nextLinkedProviders.includes(provider) : false;
+        })
+        .map((identity) => getIdentityId(identity))
+        .filter((identityId): identityId is string => typeof identityId === "string")
+    );
+
+    if (primaryIdentityId && !visibleIdentityIds.has(primaryIdentityId)) {
       setPrimaryIdentityId(null);
       await setPrimaryIdentityAction(null);
     }
 
     if (notifyOnSuccess) {
-      toast.success("Cuentas vinculadas actualizadas.", { id: toastId });
-    } else {
+      if (toastId) {
+        toast.success("Cuentas vinculadas actualizadas.", { id: toastId });
+      }
+    } else if (toastId) {
       toast.dismiss(toastId);
     }
 
     setIsRefreshingIdentities(false);
   };
-
-  useEffect(() => {
-    void syncIdentityProvidersAction();
-  }, []);
 
   const handleSaveProfile = async () => {
     setIsSavingProfile(true);
@@ -186,8 +270,8 @@ export function ProfileEditor({
   };
 
   const handleGoogleLink = async () => {
-    if (googleIdentityCount >= 2) {
-      toast.error("Solo podés vincular hasta 2 cuentas de Google.");
+    if (hasGoogleProvider) {
+      toast.error("Solo podés vincular 1 cuenta de Google.");
       return;
     }
 
@@ -210,14 +294,57 @@ export function ProfileEditor({
     toast.dismiss(toastId);
   };
 
+  const handleLinkEmailPassword = async () => {
+    if (newPassword.trim().length < 6) {
+      toast.error("Ingresá una contraseña de al menos 6 caracteres.");
+      return;
+    }
+
+    setIsLinkingEmailPassword(true);
+    const toastId = toast.loading("Vinculando email y contraseña...");
+
+    const result = await linkEmailPasswordAction({
+      password: newPassword,
+      email: newEmail,
+    });
+
+    if (!result.ok) {
+      toast.error(result.message, { id: toastId });
+      setIsLinkingEmailPassword(false);
+      return;
+    }
+
+    setLinkedProviders(normalizeLinkedProviders(result.linkedProviders ?? []));
+    setNewEmail("");
+    setNewPassword("");
+    setIsEmailLinkModalOpen(false);
+    await refreshIdentities(false, true);
+    toast.success(result.message, { id: toastId });
+    setIsLinkingEmailPassword(false);
+    router.refresh();
+  };
+
   const handleUnlink = async (identity: IdentityRecord) => {
-    if (identity.provider === "email") {
+    const provider = normalizeProvider(identity.provider);
+
+    if (provider === "email") {
       toast.error("La cuenta de email principal no se puede desvincular.");
       return;
     }
 
-    if (identities.length <= 1) {
+    if (linkedProviders.length <= 1) {
       toast.error("No podés desvincular la última cuenta disponible.");
+      return;
+    }
+
+    if (provider === "google" && !hasEmailProvider) {
+      toast.error("Primero vinculá email y contraseña antes de desvincular Google.");
+      return;
+    }
+
+    const identityId = getIdentityId(identity);
+    if (!identityId) {
+      toast.error("No se pudo identificar la cuenta seleccionada.");
       return;
     }
 
@@ -230,7 +357,7 @@ export function ProfileEditor({
       return;
     }
 
-    if (primaryIdentityId === identity.identity_id) {
+    if (primaryIdentityId === identityId) {
       const actionResult = await setPrimaryIdentityAction(null);
 
       if (!actionResult.ok) {
@@ -341,31 +468,103 @@ export function ProfileEditor({
             Cuentas vinculadas
           </CardTitle>
           <CardDescription>
-            1 cuenta de email y hasta 2 cuentas de Google por usuario.
+            Hasta 1 cuenta de email con contraseña y 1 cuenta de Google por usuario.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!hasEmailProvider ? (
+            <Dialog open={isEmailLinkModalOpen} onOpenChange={setIsEmailLinkModalOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  <Lock className="h-4 w-4 mr-2" />
+                  Vincular email y contraseña
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Vincular email y contraseña</DialogTitle>
+                  <DialogDescription>
+                    Podés usar tu email actual o ingresar uno distinto.
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-email">Email (opcional)</Label>
+                    <Input
+                      id="new-email"
+                      type="email"
+                      value={newEmail}
+                      onChange={(event) => setNewEmail(event.target.value)}
+                      placeholder={`Actual: ${email}`}
+                      disabled={isLinkingEmailPassword}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Si lo dejás vacío, usamos {email}.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">Contraseña</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      value={newPassword}
+                      onChange={(event) => setNewPassword(event.target.value)}
+                      minLength={6}
+                      placeholder="Ingresá una contraseña"
+                      disabled={isLinkingEmailPassword}
+                    />
+                  </div>
+                </div>
+
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsEmailLinkModalOpen(false)}
+                    disabled={isLinkingEmailPassword}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleLinkEmailPassword} disabled={isLinkingEmailPassword}>
+                    {isLinkingEmailPassword ? "Vinculando..." : "Confirmar vinculación"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <div className="border rounded-md p-3 text-sm text-muted-foreground">
+              La cuenta de email y contraseña ya está vinculada.
+            </div>
+          )}
+
           <Button
             variant="outline"
             className="w-full"
             onClick={handleGoogleLink}
-            disabled={isLinkingGoogle || googleIdentityCount >= 2}
+            disabled={isLinkingGoogle || hasGoogleProvider}
           >
             <Upload className="h-4 w-4 mr-2" />
             {isLinkingGoogle ? "Redirigiendo..." : "Vincular cuenta de Google"}
           </Button>
 
           <div className="flex gap-2">
-            <Badge variant="secondary">Google: {googleIdentityCount}/2</Badge>
-            <Badge variant="outline">Email: 1/1</Badge>
+            <Badge variant="secondary">Google: {hasGoogleProvider ? "1/1" : "0/1"}</Badge>
+            <Badge variant="outline">Email: {hasEmailProvider ? "1/1" : "0/1"}</Badge>
           </div>
 
           <div className="space-y-2">
-            {identities.map((identity) => {
-              const isPrimary = primaryIdentityId === identity.identity_id;
+            {visibleIdentities.map((identity) => {
+              const identityId = getIdentityId(identity);
+              if (!identityId) {
+                return null;
+              }
+
+              const provider = normalizeProvider(identity.provider);
+              const isPrimary = primaryIdentityId === identityId;
 
               return (
-                <div key={identity.identity_id} className="border rounded-md p-3 space-y-2">
+                <div key={identityId} className="border rounded-md p-3 space-y-2">
                   <p className="text-sm font-medium">{getIdentityLabel(identity)}</p>
 
                   <div className="flex gap-2">
@@ -374,7 +573,7 @@ export function ProfileEditor({
                       variant={isPrimary ? "default" : "outline"}
                       disabled={isUpdatingPrimary}
                       onClick={() => {
-                        void handleSetPrimary(identity.identity_id);
+                        void handleSetPrimary(identityId);
                       }}
                     >
                       {isPrimary ? "Cuenta principal" : "Definir como principal"}
@@ -383,7 +582,7 @@ export function ProfileEditor({
                     <Button
                       size="sm"
                       variant="outline"
-                      disabled={identity.provider === "email"}
+                      disabled={provider === "email" || (provider === "google" && !hasEmailProvider)}
                       onClick={() => {
                         void handleUnlink(identity);
                       }}

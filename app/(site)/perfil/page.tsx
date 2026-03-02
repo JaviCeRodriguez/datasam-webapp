@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getUserAvatarUrlWithOptions, getUserDisplayName } from "@/lib/supabase/user";
+import { getIdentityProviderSummary } from "@/lib/supabase/identity-providers";
 import { redirect } from "next/navigation";
 import { ProfileEditor } from "./_components/ProfileEditor";
 import type { UserIdentity } from "@supabase/supabase-js";
@@ -42,6 +43,7 @@ export default async function PerfilPage() {
   const createdDate = profile?.created_at ?? user.created_at;
 
   const initialIdentities = (user.identities ?? []) as UserIdentity[];
+  const initialProviderSummary = getIdentityProviderSummary(user, profile?.primary_identity_id ?? null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-12">
@@ -63,6 +65,7 @@ export default async function PerfilPage() {
           initialAvatarUrl={avatarUrl === "/placeholder.svg" ? null : avatarUrl}
           initialPrimaryIdentityId={profile?.primary_identity_id ?? null}
           initialIdentities={initialIdentities}
+          initialLinkedProviders={initialProviderSummary.linkedProviders}
         />
 
         <Card className="mt-6">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,8 +25,14 @@ function IniciarSesionContent() {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasStartedGoogleFlow, setHasStartedGoogleFlow] = useState(false);
 
   const handleGoogleLogin = async () => {
+    if (hasStartedGoogleFlow) {
+      return;
+    }
+
+    setHasStartedGoogleFlow(true);
     setIsSubmitting(true);
     setError(null);
 
@@ -34,14 +40,26 @@ function IniciarSesionContent() {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          prompt: "select_account",
+        },
       },
     });
 
     if (signInError) {
       setError(signInError.message);
+      setHasStartedGoogleFlow(false);
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (metodo !== "google") {
+      return;
+    }
+
+    void handleGoogleLogin();
+  }, [metodo]);
 
   const handlePasswordLogin = async () => {
     setIsSubmitting(true);
@@ -77,14 +95,10 @@ function IniciarSesionContent() {
         </CardHeader>
         <CardContent className="space-y-4">
           {metodo === "google" ? (
-            <Button
-              onClick={handleGoogleLogin}
-              disabled={isSubmitting}
-              className="w-full bg-white hover:bg-gray-50 text-gray-900 border border-gray-300"
-            >
-              <Chrome className="h-4 w-4 mr-2" />
-              {isSubmitting ? "Conectando..." : "Continuar con Google"}
-            </Button>
+            <div className="rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-center text-muted-foreground flex items-center justify-center gap-2">
+              <Chrome className="h-4 w-4" />
+              {isSubmitting ? "Redirigiendo a Google..." : "Preparando inicio con Google..."}
+            </div>
           ) : (
             <div className="space-y-4">
               <div className="space-y-2">
