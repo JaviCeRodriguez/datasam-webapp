@@ -1,70 +1,107 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar, User, Mail, Download } from "lucide-react"
 import { PageHeader } from "../../_componentes/PageHeader"
-
-// Mock data para las respuestas
-const mockResponses = [
-  {
-    id: 1,
-    submittedAt: "2024-02-15T10:30:00Z",
-    userEmail: "juan.perez@unsam.edu.ar",
-    userName: "Juan Pérez",
-    isUnsam: true,
-    responses: {
-      nombre: "Juan Pérez",
-      email: "juan.perez@unsam.edu.ar",
-      satisfaccion: "Muy satisfecho",
-      comentarios: "Excelente plataforma, muy útil para el estudio.",
-      materias_interes: ["Algoritmos", "Base de Datos"],
-    },
-  },
-  {
-    id: 2,
-    submittedAt: "2024-02-14T15:45:00Z",
-    userEmail: "maria.garcia@gmail.com",
-    userName: "María García",
-    isUnsam: false,
-    responses: {
-      nombre: "María García",
-      email: "maria.garcia@gmail.com",
-      satisfaccion: "Satisfecho",
-      comentarios: "Buena herramienta, podría mejorar la interfaz.",
-      materias_interes: ["Matemática", "Física"],
-    },
-  },
-  {
-    id: 3,
-    submittedAt: "2024-02-13T09:15:00Z",
-    userEmail: "carlos.rodriguez@unsam.edu.ar",
-    userName: "Carlos Rodríguez",
-    isUnsam: true,
-    responses: {
-      nombre: "Carlos Rodríguez",
-      email: "carlos.rodriguez@unsam.edu.ar",
-      satisfaccion: "Neutral",
-      comentarios: "Está bien, pero necesita más funcionalidades.",
-      materias_interes: ["Programación"],
-    },
-  },
-]
-
-const mockForm = {
-  id: 1,
-  title: "Encuesta de Satisfacción 2024",
-  description: "Evaluación de la experiencia estudiantil en DataSam",
-}
+import type { FormField, FormResponse } from "@/lib/form-types"
+import { getAdminFormByIdAction, getFormResponsesAction } from "../../actions"
 
 export default function FormResponsesPage() {
   const params = useParams()
   const formId = params.formId as string
 
-  const [responses] = useState(mockResponses)
+  const [responses, setResponses] = useState<FormResponse[]>([])
+  const [formTitle, setFormTitle] = useState("Formulario")
+  const [formFields, setFormFields] = useState<FormField[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadData = async () => {
+      const [formResult, responsesResult] = await Promise.all([
+        getAdminFormByIdAction(formId),
+        getFormResponsesAction(formId),
+      ])
+
+      if (!formResult.ok || !formResult.data) {
+        setErrorMessage(formResult.message || "No se pudo cargar el formulario.")
+        setIsLoading(false)
+        return
+      }
+
+      setFormTitle(formResult.data.title)
+  setFormFields(formResult.data.fields)
+
+      if (!responsesResult.ok || !responsesResult.data) {
+        setErrorMessage(responsesResult.message || "No se pudieron cargar las respuestas.")
+        setIsLoading(false)
+        return
+      }
+
+      setResponses(responsesResult.data)
+      setIsLoading(false)
+    }
+
+    loadData()
+  }, [formId])
+
+  const getResponseValueAsString = (value: unknown): string => {
+    if (value === null || value === undefined) {
+      return ""
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item) => String(item)).join(" | ")
+    }
+
+    if (typeof value === "object") {
+      return JSON.stringify(value)
+    }
+
+    return String(value)
+  }
+
+  const escapeCsvCell = (value: string): string => {
+    const escaped = value.replace(/"/g, '""')
+    return `"${escaped}"`
+  }
+
+  const handleExportCsv = () => {
+    const baseHeaders = ["response_id", "submitted_at", "user_name", "user_email", "user_id"]
+    const fieldHeaders = formFields.map((field) => field.id)
+    const headers = [...baseHeaders, ...fieldHeaders]
+
+    const rows = responses.map((response) => {
+      const baseValues = [
+        response.id,
+        response.submittedAt,
+        response.userName || "",
+        response.userEmail || "",
+        response.userId || "",
+      ]
+
+      const fieldValues = formFields.map((field) => getResponseValueAsString(response.responses[field.id]))
+
+      return [...baseValues, ...fieldValues].map(escapeCsvCell).join(",")
+    })
+
+    const csvContent = [headers.map(escapeCsvCell).join(","), ...rows].join("\n")
+    const csvBlob = new Blob(["\uFEFF", csvContent], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(csvBlob)
+
+    const anchor = document.createElement("a")
+    anchor.href = url
+    anchor.download = `respuestas-${formId}.csv`
+    document.body.appendChild(anchor)
+    anchor.click()
+    document.body.removeChild(anchor)
+
+    URL.revokeObjectURL(url)
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("es-AR", {
@@ -76,13 +113,21 @@ export default function FormResponsesPage() {
     })
   }
 
+  if (isLoading) {
+    return <div className="space-y-6 text-muted-foreground">Cargando respuestas...</div>
+  }
+
+  if (errorMessage) {
+    return <div className="space-y-6 text-destructive">{errorMessage}</div>
+  }
+
   return (
     <div className="space-y-6">
-      <PageHeader title={`Respuestas: ${mockForm.title}`} description={`${responses.length} respuestas recibidas`} />
+      <PageHeader title={`Respuestas: ${formTitle}`} description={`${responses.length} respuestas recibidas`} />
 
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Todas las respuestas</h2>
-        <Button variant="outline">
+        <Button variant="outline" onClick={handleExportCsv} disabled={responses.length === 0}>
           <Download className="h-4 w-4 mr-2" />
           Exportar
         </Button>
@@ -96,16 +141,16 @@ export default function FormResponsesPage() {
                 <div className="flex items-center gap-3">
                   <User className="h-5 w-5 text-muted-foreground" />
                   <div>
-                    <CardTitle className="text-lg">{response.userName}</CardTitle>
+                    <CardTitle className="text-lg">{response.userName || "Respuesta anónima"}</CardTitle>
                     <div className="flex items-center gap-2 mt-1">
                       <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">{response.userEmail}</span>
+                      <span className="text-sm text-muted-foreground">{response.userEmail || "Sin email"}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant={response.isUnsam ? "default" : "secondary"}>
-                    {response.isUnsam ? "UNSAM" : "Externo"}
+                  <Badge variant={response.userEmail?.endsWith("@unsam.edu.ar") ? "default" : "secondary"}>
+                    {response.userEmail?.endsWith("@unsam.edu.ar") ? "UNSAM" : "Externo"}
                   </Badge>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
@@ -126,12 +171,12 @@ export default function FormResponsesPage() {
                         <div className="flex flex-wrap gap-1">
                           {value.map((item, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
-                              {item}
+                              {String(item)}
                             </Badge>
                           ))}
                         </div>
                       ) : (
-                        <span className="break-words">{value}</span>
+                        <span className="break-words">{String(value ?? "")}</span>
                       )}
                     </div>
                   </div>

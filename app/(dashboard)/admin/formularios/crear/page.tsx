@@ -6,6 +6,7 @@ import type { FormSchema } from "@/lib/form-types"
 import { PageHeader } from "../../_componentes/PageHeader"
 import FormBuilder from "../[formId]/_componentes/FormBuilder"
 import FormPreview from "../[formId]/_componentes/FormPreview"
+import { createFormAction } from "../actions"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Save, Eye, EyeOff } from "lucide-react"
@@ -16,22 +17,37 @@ export default function CrearFormulario() {
   const [isSaving, setIsSaving] = useState(false)
 
   const [form, setForm] = useState<FormSchema>({
-    id: `form_${Date.now()}`,
+    id: "",
     title: "Nuevo Formulario",
     description: "",
     fields: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    isActive: false,
+    status: "draft",
+    responseAccess: "anonymous",
+    publishedAt: null,
   })
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const handleSave = async () => {
     setIsSaving(true)
-    // Simular guardado
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log("[v0] New form created:", form)
+    setSaveError(null)
+
+    const result = await createFormAction({
+      title: form.title,
+      description: form.description || null,
+      fields: form.fields,
+      status: form.status,
+      responseAccess: form.responseAccess,
+    })
+
+    if (!result.ok || !result.data) {
+      setSaveError(result.message || "No se pudo crear el formulario.")
+      setIsSaving(false)
+      return
+    }
+
     setIsSaving(false)
-    // Redirigir a la lista de formularios después de crear
     router.push("/admin/formularios")
   }
 
@@ -82,6 +98,12 @@ export default function CrearFormulario() {
               <FormBuilder form={form} onChange={handleFormChange} />
             </CardContent>
           </Card>
+
+          {saveError && (
+            <Card>
+              <CardContent className="pt-6 text-sm text-destructive">{saveError}</CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Vista previa */}

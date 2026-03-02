@@ -1,12 +1,12 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { useState } from "react"
-import { getFormById } from "@/lib/form-data"
+import { useEffect, useState } from "react"
 import type { FormSchema } from "@/lib/form-types"
 import { PageHeader } from "../../_componentes/PageHeader"
 import FormBuilder from "./_componentes/FormBuilder"
 import FormPreview from "./_componentes/FormPreview"
+import { getAdminFormByIdAction, updateFormAction } from "../actions"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Save, Eye, EyeOff } from "lucide-react"
@@ -14,11 +14,36 @@ import { Save, Eye, EyeOff } from "lucide-react"
 export default function EditarFormulario() {
   const params = useParams()
   const formId = params.formId as string
-  const initialForm = getFormById(formId)
 
-  const [form, setForm] = useState<FormSchema | null>(initialForm || null)
+  const [form, setForm] = useState<FormSchema | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [showPreview, setShowPreview] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadForm = async () => {
+      const result = await getAdminFormByIdAction(formId)
+      if (!result.ok || !result.data) {
+        setErrorMessage(result.message || "El formulario que buscas no existe.")
+        setIsLoading(false)
+        return
+      }
+
+      setForm(result.data)
+      setIsLoading(false)
+    }
+
+    loadForm()
+  }, [formId])
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <PageHeader title="Cargando formulario..." />
+      </div>
+    )
+  }
 
   if (!form) {
     return (
@@ -26,7 +51,7 @@ export default function EditarFormulario() {
         <PageHeader title="Formulario no encontrado" />
         <Card>
           <CardContent className="pt-6">
-            <p className="text-muted-foreground">El formulario que buscas no existe.</p>
+            <p className="text-muted-foreground">{errorMessage || "El formulario que buscas no existe."}</p>
           </CardContent>
         </Card>
       </div>
@@ -35,9 +60,22 @@ export default function EditarFormulario() {
 
   const handleSave = async () => {
     setIsSaving(true)
-    // Simular guardado
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log("[v0] Form saved:", form)
+
+    const result = await updateFormAction(formId, {
+      title: form.title,
+      description: form.description || null,
+      fields: form.fields,
+      status: form.status,
+      responseAccess: form.responseAccess,
+    })
+
+    if (!result.ok || !result.data) {
+      setErrorMessage(result.message || "No se pudo guardar el formulario.")
+      setIsSaving(false)
+      return
+    }
+
+    setForm(result.data)
     setIsSaving(false)
   }
 

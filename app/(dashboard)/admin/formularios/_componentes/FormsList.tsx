@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,44 +13,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
-// Mock data - en el futuro esto vendrá de una API
-const mockForms = [
-  {
-    id: 1,
-    title: "Encuesta de Satisfacción 2024",
-    description: "Evaluación de la experiencia estudiantil en DataSam",
-    status: "active",
-    responses: 45,
-    createdAt: "2024-01-15",
-    updatedAt: "2024-02-01",
-  },
-  {
-    id: 2,
-    title: "Registro de Interés - Nuevas Materias",
-    description: "Formulario para conocer el interés en materias optativas",
-    status: "draft",
-    responses: 0,
-    createdAt: "2024-02-10",
-    updatedAt: "2024-02-10",
-  },
-  {
-    id: 3,
-    title: "Feedback Profesores",
-    description: "Evaluación del desempeño docente por materia",
-    status: "closed",
-    responses: 128,
-    createdAt: "2023-12-01",
-    updatedAt: "2024-01-31",
-  },
-]
+import type { FormListItem } from "@/lib/form-types"
+import { listAdminFormsAction } from "../actions"
 
 export function FormsList() {
-  const [forms] = useState(mockForms)
+  const [forms, setForms] = useState<FormListItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadForms = async () => {
+      const result = await listAdminFormsAction()
+      if (!result.ok || !result.data) {
+        setErrorMessage(result.message || "No se pudieron cargar los formularios.")
+        setIsLoading(false)
+        return
+      }
+
+      setForms(result.data)
+      setIsLoading(false)
+    }
+
+    loadForms()
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
+      case "published":
         return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
       case "draft":
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
@@ -63,8 +52,8 @@ export function FormsList() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "active":
-        return "Activo"
+      case "published":
+        return "Publicado"
       case "draft":
         return "Borrador"
       case "closed":
@@ -80,6 +69,22 @@ export function FormsList() {
       month: "short",
       day: "numeric",
     })
+  }
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="py-10 text-center text-muted-foreground">Cargando formularios...</CardContent>
+      </Card>
+    )
+  }
+
+  if (errorMessage) {
+    return (
+      <Card>
+        <CardContent className="py-10 text-center text-destructive">{errorMessage}</CardContent>
+      </Card>
+    )
   }
 
   if (forms.length === 0) {
@@ -154,7 +159,7 @@ export function FormsList() {
                 <Badge className={getStatusColor(form.status)}>{getStatusText(form.status)}</Badge>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
-                  {form.responses} respuestas
+                  {form.responsesCount} respuestas
                 </div>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />

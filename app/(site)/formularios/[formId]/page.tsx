@@ -1,9 +1,9 @@
 "use client"
 
+import { useEffect, useMemo, useState } from "react"
 import { useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { getFormById } from "@/lib/form-data"
-import type { FormField as FormFieldType } from "@/lib/form-types"
+import type { FormField as FormFieldType, FormSchema } from "@/lib/form-types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,32 +11,63 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useState } from "react"
 import { ArrowLeft, Send } from "lucide-react"
 import Link from "next/link"
+import { getPublicFormByIdAction, submitPublicFormResponseAction } from "./actions"
 
 export default function FormularioPublico() {
   const params = useParams()
   const formId = params.formId as string
-  const form = getFormById(formId)
+  const [form, setForm] = useState<FormSchema | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadForm = async () => {
+      const result = await getPublicFormByIdAction(formId)
+      if (!result.ok || !result.data) {
+        setErrorMessage(result.message || "El formulario que buscas no existe o ha sido eliminado.")
+        setIsLoading(false)
+        return
+      }
+
+      setForm(result.data)
+      setIsLoading(false)
+    }
+
+    loadForm()
+  }, [formId])
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
     setValue,
-    watch,
-  } = useForm()
+    setError,
+  } = useForm<Record<string, unknown>>()
+  const requiredFieldIds = useMemo(() => form?.fields.filter((field) => field.required).map((field) => field.id) ?? [], [form])
 
-  if (!form) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6 text-center text-muted-foreground">Cargando formulario...</CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!form || errorMessage) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6 text-center">
             <h2 className="text-xl font-semibold mb-2">Formulario no encontrado</h2>
-            <p className="text-muted-foreground mb-4">El formulario que buscas no existe o ha sido eliminado.</p>
+            <p className="text-muted-foreground mb-4">{errorMessage || "El formulario que buscas no existe o ha sido eliminado."}</p>
             <Link href="/">
               <Button variant="outline">
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -49,11 +80,32 @@ export default function FormularioPublico() {
     )
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Record<string, unknown>) => {
+    setSubmitErrorMessage(null)
+
+    for (const fieldId of requiredFieldIds) {
+      const value = data[fieldId]
+      const isMissing =
+        value === undefined ||
+        value === null ||
+        value === "" ||
+        (Array.isArray(value) && value.length === 0)
+
+      if (isMissing) {
+        setError(fieldId, { type: "required", message: "Este campo es requerido." })
+        return
+      }
+    }
+
     setIsSubmitting(true)
-    // Simular envío
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log("[v0] Form submitted:", data)
+
+    const result = await submitPublicFormResponseAction(formId, data)
+    if (!result.ok) {
+      setSubmitErrorMessage(result.message || "No se pudo enviar el formulario.")
+      setIsSubmitting(false)
+      return
+    }
+
     setIsSubmitting(false)
     setIsSubmitted(true)
   }
@@ -146,7 +198,7 @@ export default function FormularioPublico() {
                   <Checkbox
                     id={`${field.id}-${option}`}
                     onCheckedChange={(checked) => {
-                      const currentValues = watch(field.id) || []
+                      const currentValues = (getValues(field.id) as string[] | undefined) || []
                       if (checked) {
                         setValue(field.id, [...currentValues, option])
                       } else {
@@ -181,7 +233,7 @@ export default function FormularioPublico() {
                   <Checkbox
                     id={`${field.id}-${option}`}
                     onCheckedChange={(checked) => {
-                      const currentValues = watch(field.id) || []
+                      const currentValues = (getValues(field.id) as string[] | undefined) || []
                       if (checked) {
                         setValue(field.id, [...currentValues, option])
                       } else {
@@ -253,6 +305,8 @@ export default function FormularioPublico() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {form.fields.map(renderField)}
+
+              {submitErrorMessage && <p className="text-sm text-destructive">{submitErrorMessage}</p>}
 
               <div className="pt-4">
                 <Button type="submit" className="w-full" disabled={isSubmitting}>

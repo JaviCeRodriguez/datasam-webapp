@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import type { FormSchema, FormField } from "@/lib/form-types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,13 +9,16 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Send } from "lucide-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ChevronsUpDown, Send } from "lucide-react"
 
 interface FormPreviewProps {
   form: FormSchema
 }
 
 export default function FormPreview({ form }: FormPreviewProps) {
+  const [isDebugOpen, setIsDebugOpen] = useState(false)
+
   const renderField = (field: FormField) => {
     switch (field.type) {
       case "text":
@@ -131,25 +135,39 @@ export default function FormPreview({ form }: FormPreviewProps) {
       </Card>
 
       <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="text-lg text-muted-foreground">Debug - Estructura del Formulario</CardTitle>
-          <CardDescription>
-            Esta información te ayudará a entender cómo guardar el formulario en la base de datos
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <Label className="text-sm font-medium">Esquema del Formulario (JSON):</Label>
-              <pre className="mt-2 p-4 bg-muted rounded-lg text-xs overflow-auto max-h-96">
-                {JSON.stringify(form, null, 2)}
-              </pre>
-            </div>
+        <Collapsible open={isDebugOpen} onOpenChange={setIsDebugOpen}>
+          <CardHeader className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-lg text-muted-foreground">Debug - Estructura del Formulario</CardTitle>
+                <CardDescription>
+                  Esta información te ayudará a entender cómo guardar el formulario en la base de datos
+                </CardDescription>
+              </div>
 
-            <div>
-              <Label className="text-sm font-medium">Estructura para Base de Datos:</Label>
-              <pre className="mt-2 p-4 bg-muted rounded-lg text-xs overflow-auto">
-                {`// Tabla: forms
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" size="sm">
+                  {isDebugOpen ? "Ocultar" : "Mostrar"}
+                  <ChevronsUpDown className="h-4 w-4 ml-2" />
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+          </CardHeader>
+
+          <CollapsibleContent>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Esquema del Formulario (JSON):</Label>
+                  <pre className="mt-2 p-4 bg-muted rounded-lg text-xs overflow-auto max-h-96">
+                    {JSON.stringify(form, null, 2)}
+                  </pre>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Estructura para Base de Datos:</Label>
+                  <pre className="mt-2 p-4 bg-muted rounded-lg text-xs overflow-auto">
+                    {`// Tabla: forms
 {
   id: "${form.id}",
   title: "${form.title}",
@@ -169,10 +187,12 @@ export default function FormPreview({ form }: FormPreviewProps) {
   },
   submitted_at: "timestamp"
 }`}
-              </pre>
-            </div>
-          </div>
-        </CardContent>
+                  </pre>
+                </div>
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
       </Card>
     </div>
   )

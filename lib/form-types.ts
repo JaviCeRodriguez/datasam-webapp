@@ -12,20 +12,34 @@ export interface FormField {
   }
 }
 
+export type FormStatus = "draft" | "published" | "closed"
+
+export type FormResponseAccess = "anonymous" | "authenticated"
+
 export interface FormSchema {
   id: string
   title: string
-  description?: string
+  description?: string | null
   fields: FormField[]
   createdAt: string
   updatedAt: string
-  isActive: boolean
+  createdBy?: string | null
+  status: FormStatus
+  responseAccess: FormResponseAccess
+  publishedAt?: string | null
 }
 
 export interface FormResponse {
   id: string
   formId: string
-  responses: Record<string, any>
+  responses: Record<string, unknown>
   submittedAt: string
-  userEmail?: string
+  createdAt: string
+  userId?: string | null
+  userEmail?: string | null
+  userName?: string | null
+}
+
+export interface FormListItem extends FormSchema {
+  responsesCount: number
 }

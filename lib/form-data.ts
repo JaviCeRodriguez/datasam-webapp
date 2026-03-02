@@ -53,7 +53,9 @@ export const mockForms: FormSchema[] = [
     ],
     createdAt: "2024-01-15",
     updatedAt: "2024-01-15",
-    isActive: true,
+    status: "published",
+    responseAccess: "anonymous",
+    publishedAt: "2024-01-15",
   },
   {
     id: "2",
@@ -87,7 +89,9 @@ export const mockForms: FormSchema[] = [
     ],
     createdAt: "2024-01-10",
     updatedAt: "2024-01-12",
-    isActive: true,
+    status: "draft",
+    responseAccess: "anonymous",
+    publishedAt: null,
   },
 ]
 

@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Trash2, GripVertical, Type, AlignLeft, List, CheckSquare } from "lucide-react"
 
 interface FormBuilderProps {
@@ -29,14 +30,17 @@ const fieldTypes = [
 export default function FormBuilder({ form, onChange }: FormBuilderProps) {
   const [selectedField, setSelectedField] = useState<string | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [nextFieldId, setNextFieldId] = useState(1)
 
   const updateForm = (updates: Partial<FormSchema>) => {
     onChange({ ...form, ...updates, updatedAt: new Date().toISOString() })
   }
 
   const addField = (type: FormField["type"]) => {
+    const newFieldId = `field_${nextFieldId}`
+
     const newField: FormField = {
-      id: `field_${Date.now()}`,
+      id: newFieldId,
       type,
       label: `Nuevo campo ${type}`,
       required: false,
@@ -46,6 +50,8 @@ export default function FormBuilder({ form, onChange }: FormBuilderProps) {
     updateForm({
       fields: [...form.fields, newField],
     })
+
+    setNextFieldId((current) => current + 1)
   }
 
   const updateField = (fieldId: string, updates: Partial<FormField>) => {
@@ -95,6 +101,38 @@ export default function FormBuilder({ form, onChange }: FormBuilderProps) {
             onChange={(e) => updateForm({ description: e.target.value })}
             placeholder="Descripción opcional del formulario"
           />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Estado</Label>
+            <Select value={form.status} onValueChange={(value) => updateForm({ status: value as FormSchema["status"] })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccioná un estado" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">Borrador</SelectItem>
+                <SelectItem value="published">Publicado</SelectItem>
+                <SelectItem value="closed">Cerrado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Acceso de respuestas</Label>
+            <Select
+              value={form.responseAccess}
+              onValueChange={(value) => updateForm({ responseAccess: value as FormSchema["responseAccess"] })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccioná un acceso" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="anonymous">Anónimo + autenticado</SelectItem>
+                <SelectItem value="authenticated">Solo autenticado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 
