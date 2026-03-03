@@ -237,6 +237,16 @@ export async function createFormAction(input: unknown): Promise<ActionResult<For
   return { ok: true, data: mapFormRow(data as FormRow) }
 }
 
+function getPublishedAt(nextStatus: FormStatus, currentPublishedAt: string | null): string | null {
+  if (nextStatus === "published") {
+    return currentPublishedAt || new Date().toISOString()
+  }
+  if (nextStatus === "draft") {
+    return null
+  }
+  return currentPublishedAt || null
+}
+
 export async function updateFormAction(formId: string, input: unknown): Promise<ActionResult<FormSchema>> {
   const parsed = upsertFormSchema.safeParse(input)
   if (!parsed.success) {
@@ -252,12 +262,7 @@ export async function updateFormAction(formId: string, input: unknown): Promise<
   const { data: currentForm } = await supabase.from("forms").select("published_at, status").eq("id", formId).maybeSingle()
 
   const nextStatus = parsed.data.status
-  const publishedAt =
-    nextStatus === "published"
-      ? currentForm?.published_at || new Date().toISOString()
-      : nextStatus === "draft"
-        ? null
-        : currentForm?.published_at || null
+  const publishedAt = getPublishedAt(nextStatus, currentForm?.published_at || null)
 
   const { data, error } = await supabase
     .from("forms")

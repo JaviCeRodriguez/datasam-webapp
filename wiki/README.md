@@ -11,9 +11,18 @@ Esta carpeta contiene la documentación y guías del proyecto.
   - Uso responsable de herramientas de IA
   - Solución de problemas comunes
 
+- **[Guia-de-Colaboracion.md](./Guia-de-Colaboracion.md)**: Guía práctica de colaboración para contribuidores, incluyendo:
+  - Fork, clonado y sincronización con upstream
+  - Configuración de Supabase y variables de entorno
+  - Orden de ejecución de migraciones SQL
+  - Flujo de trabajo de PR y checklist de calidad
+  - Uso recomendado de Cursor/Codex/IDEs con agentes y prompting
+
 ## Cómo usar esta Wiki
 
 Si eres nuevo/a en el proyecto, te recomendamos comenzar por la [Guía de Desarrollo Local](./Guia-de-Desarrollo-Local.md).
+
+Si ya tienes entorno listo y vas a colaborar activamente, continúa con la [Guía de Colaboración](./Guia-de-Colaboracion.md).
 
 ## Contribuir a la Wiki
 

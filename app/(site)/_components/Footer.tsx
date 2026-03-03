@@ -25,6 +25,16 @@ export const Footer = () => {
             </Link>
           </div>
           <div className="border-t border-border pt-8">
+            <p className="text-sm text-muted-foreground mb-2">
+              ¿Quieres contribuir?{" "}
+              <Link
+                href="https://github.com/JaviCeRodriguez/datasam-webapp/blob/main/wiki/Guia-de-Colaboracion.md"
+                target="_blank"
+                className="text-muted-foreground hover:text-primary transition-colors font-semibold"
+              >
+                Lee la guía de colaboración
+              </Link>
+            </p>
             <p className="text-sm text-muted-foreground">
               Web desarrollada por <Link href="https://javo.com.ar/" target="_blank" className="text-muted-foreground hover:text-primary transition-colors font-semibold">Javo</Link> (con muchos 🧉), para{" "}
               <span className="text-secondary font-semibold">DATA SAM</span> © 2025

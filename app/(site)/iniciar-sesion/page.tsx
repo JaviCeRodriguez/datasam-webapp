@@ -1,7 +1,8 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,58 +13,79 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Chrome, Mail, Lock } from "lucide-react";
+import { Globe, Mail, Lock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 function IniciarSesionContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const metodo = searchParams.get("metodo") || "password";
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasStartedGoogleFlow, setHasStartedGoogleFlow] = useState(false);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const confirmWithCodeHref = email
+    ? `/confirmar-registro?email=${encodeURIComponent(email)}`
+    : "/confirmar-registro";
 
-  const handleGoogleLogin = async () => {
-    if (hasStartedGoogleFlow) {
+  useEffect(() => {
+    const errorCode = searchParams.get("error_code");
+    const errorDescription = searchParams.get("error_description");
+
+    if (!errorCode) {
       return;
     }
 
-    setHasStartedGoogleFlow(true);
-    setIsSubmitting(true);
-    setError(null);
-
-    const { error: signInError } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: {
-          prompt: "select_account",
-        },
-      },
-    });
-
-    if (signInError) {
-      setError(signInError.message);
-      setHasStartedGoogleFlow(false);
-      setIsSubmitting(false);
+    if (errorCode === "otp_expired") {
+      setError("El enlace de verificación expiró o ya fue usado.");
+      setInfoMessage("Puedes iniciar sesión con contraseña si ya confirmaste, o solicitar un nuevo correo.");
+      return;
     }
-  };
+
+    const decodedDescription = errorDescription
+      ? decodeURIComponent(errorDescription.replaceAll("+", " "))
+      : "No se pudo completar la autenticación.";
+
+    setError(decodedDescription);
+  }, [searchParams]);
 
   useEffect(() => {
     if (metodo !== "google") {
       return;
     }
 
-    void handleGoogleLogin();
-  }, [metodo]);
+    let isMounted = true;
+
+    const startGoogleFlow = async () => {
+      const { error: signInError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${globalThis.location.origin}/auth/callback`,
+          queryParams: {
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (signInError && isMounted) {
+        setError(signInError.message);
+      }
+    };
+
+    void startGoogleFlow();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [metodo, supabase]);
 
   const handlePasswordLogin = async () => {
     setIsSubmitting(true);
     setError(null);
+    setInfoMessage(null);
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
@@ -71,7 +93,15 @@ function IniciarSesionContent() {
     });
 
     if (signInError) {
-      setError(signInError.message);
+      const normalizedMessage = signInError.message.toLowerCase();
+
+      if (normalizedMessage.includes("email not confirmed") || normalizedMessage.includes("email_not_confirmed")) {
+        setError("Tu correo todavía no está confirmado.");
+        setInfoMessage("Solicita un nuevo correo de verificación e inténtalo nuevamente.");
+      } else {
+        setError(signInError.message);
+      }
+
       setIsSubmitting(false);
       return;
     }
@@ -96,8 +126,8 @@ function IniciarSesionContent() {
         <CardContent className="space-y-4">
           {metodo === "google" ? (
             <div className="rounded-md border border-border bg-muted/50 px-4 py-3 text-sm text-center text-muted-foreground flex items-center justify-center gap-2">
-              <Chrome className="h-4 w-4" />
-              {isSubmitting ? "Redirigiendo a Google..." : "Preparando inicio con Google..."}
+              <Globe className="h-4 w-4" />
+              {error ? "No se pudo redirigir a Google" : "Redirigiendo a Google..."}
             </div>
           ) : (
             <div className="space-y-4">
@@ -138,11 +168,28 @@ function IniciarSesionContent() {
           )}
 
           {error ? <p className="text-sm text-destructive text-center">{error}</p> : null}
+          {infoMessage ? <p className="text-sm text-muted-foreground text-center">{infoMessage}</p> : null}
+
+          {metodo === "password" ? (
+            <div className="text-center text-sm">
+              <span className="text-muted-foreground">¿Tienes un código? </span>
+              <Link href={confirmWithCodeHref} className="font-medium text-primary hover:underline">
+                Confirmar registro con código
+              </Link>
+            </div>
+          ) : null}
 
           <div className="text-center text-sm text-muted-foreground">
             <p>
               Usa tu cuenta habilitada en Supabase Auth
             </p>
+          </div>
+
+          <div className="text-center text-sm">
+            <span className="text-muted-foreground">¿No tienes cuenta? </span>
+            <Link href="/registrarse" className="font-medium text-primary hover:underline">
+              Regístrate
+            </Link>
           </div>
         </CardContent>
       </Card>

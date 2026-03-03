@@ -11,6 +11,16 @@ import {
 } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
+
+function isMissingRefreshTokenError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+  return message.includes("invalid refresh token") || message.includes("refresh token not found");
+}
 
 export default function CerrarSesionPage() {
   const router = useRouter();
@@ -19,7 +29,36 @@ export default function CerrarSesionPage() {
 
   useEffect(() => {
     const signOutNow = async () => {
-      await supabase.auth.signOut();
+      try {
+        const { error } = await supabase.auth.signOut();
+
+        if (error && !isMissingRefreshTokenError(error)) {
+          const localSignOut = await supabase.auth.signOut({ scope: "local" });
+
+          if (localSignOut.error) {
+            toast.error("No se pudo cerrar la sesión. Intenta de nuevo.");
+            setIsSigningOut(false);
+            return;
+          }
+
+          toast.error("No se pudo cerrar sesión en el servidor. Se cerró localmente.");
+        } else if (error) {
+          await supabase.auth.signOut({ scope: "local" });
+          toast.info("La sesión ya estaba cerrada.");
+        } else {
+          toast.success("Sesión cerrada.");
+        }
+      } catch (error) {
+        if (isMissingRefreshTokenError(error)) {
+          await supabase.auth.signOut({ scope: "local" });
+          toast.info("La sesión ya estaba cerrada.");
+        } else {
+          toast.error("No se pudo cerrar la sesión. Intenta de nuevo.");
+          setIsSigningOut(false);
+          return;
+        }
+      }
+
       setIsSigningOut(false);
       router.replace("/");
       router.refresh();

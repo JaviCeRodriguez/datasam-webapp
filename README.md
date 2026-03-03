@@ -6,6 +6,8 @@ Aplicación web moderna para la gestión de datos y formularios, construida con 
 
 ¿Quieres contribuir al proyecto? **[Lee nuestra Guía de Desarrollo Local](./wiki/Guia-de-Desarrollo-Local.md)** para comenzar.
 
+Para flujo completo de colaboración (fork, Supabase, envs, migraciones y uso de agentes IA), revisa la **[Guía de Colaboración](./wiki/Guia-de-Colaboracion.md)**.
+
 La guía incluye:
 - ✅ Requisitos previos e instalación
 - ✅ Cómo ejecutar el proyecto localmente
@@ -61,6 +63,7 @@ pnpm lint
 ## 📚 Documentación
 
 - [Guía de Desarrollo Local](./wiki/Guia-de-Desarrollo-Local.md) - Configuración e inicio rápido
+- [Guía de Colaboración](./wiki/Guia-de-Colaboracion.md) - Fork, clonado, Supabase, migraciones, PRs y uso de agentes IA
 - [Issues del Proyecto](https://github.com/JaviCeRodriguez/datasam-webapp/issues) - Tareas y mejoras
 - [Pull Requests](https://github.com/JaviCeRodriguez/datasam-webapp/pulls) - Contribuciones en progreso
 

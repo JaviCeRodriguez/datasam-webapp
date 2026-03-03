@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,11 +27,34 @@ type UserProfileRow = {
 };
 
 export const Navigation = () => {
+  const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [profile, setProfile] = useState<UserProfileRow | null>(null);
   const [roleNames, setRoleNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    if (isSigningOut) {
+      return;
+    }
+
+    setIsSigningOut(true);
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      await supabase.auth.signOut({ scope: "local" });
+    }
+
+    setUser(null);
+    setProfile(null);
+    setRoleNames([]);
+    setIsSigningOut(false);
+    router.replace("/");
+    router.refresh();
+  };
 
   useEffect(() => {
     const loadProfile = async (userId: string) => {
@@ -44,11 +68,7 @@ export const Navigation = () => {
     };
 
     const syncUrlFromOAuth = async () => {
-      if (typeof window === "undefined") {
-        return;
-      }
-
-      const url = new URL(window.location.href);
+      const url = new URL(globalThis.location.href);
       const code = url.searchParams.get("code");
 
       if (!code) {
@@ -63,7 +83,7 @@ export const Navigation = () => {
       url.searchParams.delete("authuser");
       url.searchParams.delete("prompt");
 
-      window.history.replaceState({}, "", url.toString());
+      globalThis.history.replaceState({}, "", url.toString());
     };
 
     const hydrateUserState = async (nextUser: SupabaseUser | null) => {
@@ -196,14 +216,15 @@ export const Navigation = () => {
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/cerrar-sesion"
-                        className="flex items-center text-red-600"
-                      >
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Cerrar sesión
-                      </Link>
+                    <DropdownMenuItem
+                      onSelect={(event) => {
+                        event.preventDefault();
+                        void handleSignOut();
+                      }}
+                      className="flex items-center text-red-600"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      {isSigningOut ? "Cerrando sesión..." : "Cerrar sesión"}
                     </DropdownMenuItem>
                   </>
                 ) : (
