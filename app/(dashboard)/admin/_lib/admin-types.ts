@@ -37,3 +37,23 @@ export type AdminUsersResult = {
   items: AdminUserItem[]
   total: number
 }
+
+export type AdminActivityItem = {
+  id: string
+  type: string
+  typeLabel: string
+  user: string
+  connectorText: string
+  target: string
+  createdAt: string
+  timeLabel: string
+}
+
+export type AdminActivityResult = {
+  items: AdminActivityItem[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+  search: string
+}

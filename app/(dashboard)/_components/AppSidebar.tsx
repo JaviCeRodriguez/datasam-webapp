@@ -1,4 +1,4 @@
-import { Home, Users, FileText, ArrowLeft } from "lucide-react"
+import { Home, Users, FileText, Activity, ArrowLeft } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +29,11 @@ const items = [
     title: "Formularios",
     url: "/admin/formularios",
     icon: FileText,
+  },
+  {
+    title: "Actividad",
+    url: "/admin/actividad",
+    icon: Activity,
   },
 ]
 

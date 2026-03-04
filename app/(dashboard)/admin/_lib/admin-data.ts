@@ -3,6 +3,7 @@ import "server-only"
 import { createClient } from "@/lib/supabase/server"
 import { getIdentityProviderSummary } from "@/lib/supabase/identity-providers"
 import type {
+  AdminActivityResult,
   AdminStats,
   AdminUsersResult,
   ProgressByYearDatum,
@@ -47,6 +48,16 @@ type RecentEventRow = {
   created_at: string
 }
 
+type ActivityEventRow = {
+  id: string
+  type: string
+  user_id: string | null
+  user_full_name: string | null
+  connector_text: string
+  target: string | null
+  created_at: string
+}
+
 type UserRow = {
   id: string
   email: string
@@ -59,6 +70,7 @@ type UserRow = {
 
 const UNSAM_EMAIL_PATTERN = /@(?:[a-z0-9-]+\.)*unsam\.edu\.ar$/i
 const CURRENT_YEAR = new Date().getUTCFullYear()
+const ADMIN_ACTIVITY_PAGE_SIZE = 25
 
 function isUnsamEmail(email: string | null | undefined): boolean {
   if (!email) {
@@ -450,5 +462,74 @@ export async function getAdminUsers(searchTerm: string): Promise<AdminUsersResul
   return {
     items,
     total: items.length,
+  }
+}
+
+export async function getAdminActivity(searchTerm: string, requestedPage: number): Promise<AdminActivityResult> {
+  const supabase = await createClient()
+  const normalizedSearch = searchTerm.trim()
+  const page = Number.isFinite(requestedPage) && requestedPage > 0 ? Math.floor(requestedPage) : 1
+
+  let countQuery = supabase
+    .from("events")
+    .select("id", { count: "exact", head: true })
+
+  if (normalizedSearch) {
+    const escaped = normalizedSearch.replaceAll(",", "")
+    countQuery = countQuery.or(
+      `type.ilike.%${escaped}%,user_full_name.ilike.%${escaped}%,connector_text.ilike.%${escaped}%,target.ilike.%${escaped}%`
+    )
+  }
+
+  const { count, error: countError } = await countQuery
+  if (countError) {
+    return {
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: ADMIN_ACTIVITY_PAGE_SIZE,
+      totalPages: 1,
+      search: normalizedSearch,
+    }
+  }
+
+  const total = count ?? 0
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_ACTIVITY_PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const from = (safePage - 1) * ADMIN_ACTIVITY_PAGE_SIZE
+  const to = from + ADMIN_ACTIVITY_PAGE_SIZE - 1
+
+  let dataQuery = supabase
+    .from("events")
+    .select("id, type, user_id, user_full_name, connector_text, target, created_at")
+    .order("created_at", { ascending: false })
+    .range(from, to)
+
+  if (normalizedSearch) {
+    const escaped = normalizedSearch.replaceAll(",", "")
+    dataQuery = dataQuery.or(
+      `type.ilike.%${escaped}%,user_full_name.ilike.%${escaped}%,connector_text.ilike.%${escaped}%,target.ilike.%${escaped}%`
+    )
+  }
+
+  const { data } = await dataQuery
+  const rows = (data ?? []) as ActivityEventRow[]
+
+  return {
+    items: rows.map((event) => ({
+      id: event.id,
+      type: event.type,
+      typeLabel: getEventTypeLabel(event.type),
+      user: event.user_full_name || "Usuario",
+      connectorText: event.connector_text,
+      target: event.target ?? "-",
+      createdAt: event.created_at,
+      timeLabel: getRelativeTimeLabel(event.created_at),
+    })),
+    total,
+    page: safePage,
+    pageSize: ADMIN_ACTIVITY_PAGE_SIZE,
+    totalPages,
+    search: normalizedSearch,
   }
 }
