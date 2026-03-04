@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { HeroSection } from "./_components/HeroSection"
@@ -9,7 +9,7 @@ import { TeamSection } from "./_components/TeamSection"
 import { ResourcesSection } from "./_components/ResourcesSection"
 import { CTASection } from "./_components/CTASection"
 
-export default function DataSamHomepage() {
+function DataSamHomepageContent() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -48,5 +48,24 @@ export default function DataSamHomepage() {
       <ResourcesSection />
       <CTASection />
     </div>
+  )
+}
+
+export default function DataSamHomepage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center px-4">
+          <div className="max-w-md w-full rounded-lg border bg-card p-6 text-center shadow-sm space-y-2">
+            <h2 className="text-xl font-semibold">Contenido temporalmente no disponible</h2>
+            <p className="text-sm text-muted-foreground">
+              Estamos preparando esta vista. Intentá nuevamente en unos segundos.
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <DataSamHomepageContent />
+    </Suspense>
   )
 }
