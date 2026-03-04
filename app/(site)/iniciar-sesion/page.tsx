@@ -25,32 +25,36 @@ function IniciarSesionContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authInfoMessage, setAuthInfoMessage] = useState<string | null>(null);
   const confirmWithCodeHref = email
     ? `/confirmar-registro?email=${encodeURIComponent(email)}`
     : "/confirmar-registro";
 
-  useEffect(() => {
+  const queryFeedback = useMemo(() => {
     const errorCode = searchParams.get("error_code");
     const errorDescription = searchParams.get("error_description");
 
     if (!errorCode) {
-      return;
+      return { error: null as string | null, infoMessage: null as string | null };
     }
 
     if (errorCode === "otp_expired") {
-      setError("El enlace de verificación expiró o ya fue usado.");
-      setInfoMessage("Puedes iniciar sesión con contraseña si ya confirmaste, o solicitar un nuevo correo.");
-      return;
+      return {
+        error: "El enlace de verificación expiró o ya fue usado.",
+        infoMessage: "Puedes iniciar sesión con contraseña si ya confirmaste, o solicitar un nuevo correo.",
+      };
     }
 
     const decodedDescription = errorDescription
       ? decodeURIComponent(errorDescription.replaceAll("+", " "))
       : "No se pudo completar la autenticación.";
 
-    setError(decodedDescription);
+    return { error: decodedDescription, infoMessage: null as string | null };
   }, [searchParams]);
+
+  const error = authError ?? queryFeedback.error;
+  const infoMessage = authInfoMessage ?? queryFeedback.infoMessage;
 
   useEffect(() => {
     if (metodo !== "google") {
@@ -71,7 +75,7 @@ function IniciarSesionContent() {
       });
 
       if (signInError && isMounted) {
-        setError(signInError.message);
+        setAuthError(signInError.message);
       }
     };
 
@@ -84,8 +88,8 @@ function IniciarSesionContent() {
 
   const handlePasswordLogin = async () => {
     setIsSubmitting(true);
-    setError(null);
-    setInfoMessage(null);
+    setAuthError(null);
+    setAuthInfoMessage(null);
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
@@ -96,10 +100,10 @@ function IniciarSesionContent() {
       const normalizedMessage = signInError.message.toLowerCase();
 
       if (normalizedMessage.includes("email not confirmed") || normalizedMessage.includes("email_not_confirmed")) {
-        setError("Tu correo todavía no está confirmado.");
-        setInfoMessage("Solicita un nuevo correo de verificación e inténtalo nuevamente.");
+        setAuthError("Tu correo todavía no está confirmado.");
+        setAuthInfoMessage("Solicita un nuevo correo de verificación e inténtalo nuevamente.");
       } else {
-        setError(signInError.message);
+        setAuthError(signInError.message);
       }
 
       setIsSubmitting(false);

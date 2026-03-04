@@ -6,8 +6,17 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle2, Circle, Clock, Users, Monitor } from "lucide-react"
 import type { SubjectStatus } from "@/app/hooks/useSubjectProgress"
 
+type Subject = {
+  code: string
+  nombre: string
+  creditos: number
+  horasPresenciales: number
+  horasVirtuales: number
+  correlativas: string[] | null
+}
+
 interface SubjectCardProps {
-  subject: any
+  subject: Subject
   status: SubjectStatus
   canTake: boolean
   onUpdateStatus: (code: string, status: SubjectStatus) => void
