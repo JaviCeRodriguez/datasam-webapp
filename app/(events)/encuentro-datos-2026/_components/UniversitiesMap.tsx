@@ -210,11 +210,15 @@ export function UniversitiesMap({ academicProposals }: UniversitiesMapProps) {
         </div>
 
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-          <Card className="overflow-hidden rounded-md p-0">
-            <div ref={mapContainerRef} className="h-[560px] w-full" aria-label="Mapa de propuestas academicas" />
+          <Card className="relative z-0 isolate overflow-hidden rounded-md p-0">
+            <div
+              ref={mapContainerRef}
+              className="relative z-0 h-[560px] w-full"
+              aria-label="Mapa de propuestas academicas"
+            />
           </Card>
 
-          <div className="flex h-[560px] flex-col overflow-hidden">
+          <div className="relative z-20 flex h-[560px] flex-col overflow-hidden">
             <div className="mb-4 grid gap-3 sm:grid-cols-2">
               <Select value={selectedProvince} onValueChange={setSelectedProvince}>
                 <SelectTrigger className="w-full" aria-label="Filtrar por provincia">
@@ -245,7 +249,7 @@ export function UniversitiesMap({ academicProposals }: UniversitiesMapProps) {
               </Select>
             </div>
 
-            <div className="grid min-h-0 flex-1 gap-3 overflow-y-auto pr-1">
+            <div className="grid min-h-0 flex-1 auto-rows-max content-start gap-3 overflow-y-auto pr-1">
               {filteredProposals.length > 0 ? (
                 filteredProposals.map((proposal) => (
                   <button
@@ -253,7 +257,7 @@ export function UniversitiesMap({ academicProposals }: UniversitiesMapProps) {
                     type="button"
                     onClick={() => openProposal(proposal)}
                     className={cn(
-                      "rounded-md border bg-background p-4 text-left transition-all hover:border-sky-300 hover:shadow-sm",
+                      "rounded-md border bg-background p-3 text-left transition-all hover:border-sky-300 hover:shadow-sm",
                       selectedProposalId === proposal.id && "border-sky-500 bg-sky-50"
                     )}
                   >
