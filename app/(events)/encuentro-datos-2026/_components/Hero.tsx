@@ -43,13 +43,20 @@ export function Hero() {
 
           <div className="flex flex-col gap-4 text-slate-100 sm:flex-row sm:items-center sm:gap-6">
             <div className="flex items-center gap-2">
-              <Calendar className="size-5 text-[#f0abfc]" />
+              <Calendar className="size-5 text-[#67e8f9]" />
               <span className="font-semibold">{eventDetails.date}</span>
             </div>
             <span className="hidden size-1 rounded-full bg-slate-400 sm:block" />
             <div className="flex items-center gap-2">
-              <MapPin className="size-5 text-[#f0abfc]" />
-              <span className="font-semibold">{eventDetails.location}</span>
+              <MapPin className="size-5 text-[#67e8f9]" />
+              <a
+                href={eventDetails.locationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline-offset-4 hover:underline"
+              >
+                {eventDetails.location}
+              </a>
             </div>
           </div>
 
@@ -57,7 +64,7 @@ export function Hero() {
             <Button
               asChild
               size="lg"
-              className="bg-[#c026d3] px-8 text-base font-semibold text-white shadow-lg shadow-fuchsia-950/30 hover:bg-[#a21caf]"
+              className="bg-[#0284c7] px-8 text-base font-semibold text-white shadow-lg shadow-sky-950/30 hover:bg-[#0369a1]"
             >
               <a href={eventDetails.registrationUrl} target="_blank" rel="noopener noreferrer">
                 Registrate

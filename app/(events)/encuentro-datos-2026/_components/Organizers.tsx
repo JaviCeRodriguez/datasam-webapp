@@ -32,14 +32,14 @@ export function Organizers() {
                       />
                     </div>
                   ) : (
-                    <span className="text-xl font-black text-primary">{organizer.logoText}</span>
+                    <span className="text-xl font-black text-sky-700">{organizer.logoText}</span>
                   )}
                 </div>
                 <div>
                   <h3 className="font-bold">{organizer.name}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{organizer.description}</p>
                 </div>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-sky-700">
                   Ver sitio
                   <ExternalLink className="size-3.5" />
                 </span>

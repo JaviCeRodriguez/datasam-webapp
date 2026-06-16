@@ -30,7 +30,7 @@ export function EventNavigation() {
       <div className="mx-auto max-w-7xl px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           <Link href="/encuentro-datos-2026" className="flex min-w-0 items-center gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-[#0284c7] text-sm font-bold text-white">
               ED
             </span>
             <span className="truncate text-lg font-bold">{eventDetails.name}</span>
@@ -38,13 +38,13 @@ export function EventNavigation() {
 
           <div className="hidden items-center gap-6 md:flex">
             {navItems.map((item) => (
-              <a key={item.href} href={item.href} className="text-sm font-medium transition-colors hover:text-primary">
+              <a key={item.href} href={item.href} className="text-sm font-medium transition-colors hover:text-sky-700">
                 {item.label}
               </a>
             ))}
           </div>
 
-          <Button asChild className="hidden md:inline-flex">
+          <Button asChild className="hidden bg-[#0284c7] text-white hover:bg-[#0369a1] md:inline-flex">
             <a href={eventDetails.registrationUrl} target="_blank" rel="noopener noreferrer">
               Registrate
             </a>
@@ -69,13 +69,13 @@ export function EventNavigation() {
               <a
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium transition-colors hover:text-primary"
+                className="text-sm font-medium transition-colors hover:text-sky-700"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
-            <Button asChild>
+            <Button asChild className="bg-[#0284c7] text-white hover:bg-[#0369a1]">
               <a
                 href={eventDetails.registrationUrl}
                 target="_blank"

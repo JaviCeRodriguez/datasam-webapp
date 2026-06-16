@@ -5,8 +5,10 @@ const assetPath = "/events/encuentro-datos-2026"
 export const eventDetails = {
   shortName: "ENECD",
   name: "1° Encuentro Nacional de Estudiantes de Ciencia de Datos",
-  date: "10 de Octubre 2026",
+  date: "Sábado 10 de Octubre 2026",
   location: "ITS - UNSAM - San Martín - Buenos Aires",
+  locationUrl:
+    "https://www.google.com/maps/search/?api=1&query=Instituto%20de%20Tecnolog%C3%ADa%20Sabato%20UNSAM%20San%20Mart%C3%ADn",
   subtitle: "El evento más importante que conecta a estudiantes de Ciencia de Datos de todo el país.",
   registrationUrl:
     "https://docs.google.com/forms/d/e/1FAIpQLSfn7qrshPZ-qQacdIVjAsrgn5PmhwPEeIkhh2fssdg7T0m_yA/viewform?usp=header",
@@ -55,67 +57,24 @@ export const schedule = [
   { start: "19:00", end: "20:00", activity: "Cierre" },
 ]
 
-export const academicProposals = [
-  {
-    name: "Universidad Nacional de San Martin",
-    acronym: "UNSAM",
-    title: "Licenciatura en Ciencia de Datos",
-    logo: `${assetPath}/unsam-logo.jpg`,
-    link: "https://unsam.edu.ar/escuelas/ecyt/661/ciencia/ciencia-de-datos",
-    coords: [-34.58046469920226, -58.52253522702739] as const,
-  },
-  {
-    name: "Universidad de Buenos Aires",
-    acronym: "UBA",
-    title: "Licenciatura en Ciencias de Datos",
-    logo: `${assetPath}/uba-logo.jpg`,
-    link: "https://lcd.exactas.uba.ar/",
-    coords: [-34.54191487620748, -58.442429997263964] as const,
-  },
-  {
-    name: "Instituto Tecnologico de Buenos Aires",
-    acronym: "ITBA",
-    title: "Licenciatura en Analitica",
-    logo: `${assetPath}/itba-logo.jpg`,
-    link: "https://www.itba.edu.ar/grado/analitica-empresarial-y-social/",
-    coords: [-34.64048034854542, -58.400958598510066] as const,
-  },
-  {
-    name: "Universidad Nacional de La Plata",
-    acronym: "UNLP",
-    title: "Ciencia de Datos en Organizaciones",
-    logo: `${assetPath}/unlp-logo.jpg`,
-    link: "https://www.econo.unlp.edu.ar/cdo",
-    coords: [-34.91246259146304, -57.9506745884923] as const,
-  },
-  {
-    name: "Universidad Nacional de Rosario",
-    acronym: "UNR",
-    title: "Licenciatura en Ciencia de Datos",
-    logo: `${assetPath}/unr-logo.jpg`,
-    link: "https://portal.fcecon.unr.edu.ar/carreras/grado/licenciatura-en-ciencia-de-datos-pagina-en-construccion",
-    coords: [-32.95020600150649, -60.635595436124554] as const,
-  },
-]
-
 export const organizers = [
   {
     name: "DATA SAM",
     description: "Comunidad de datos de UNSAM",
-    logo: "/logos/datasam.png",
+    logo: "/images/logo_h_claro_final.svg",
     link: "https://datasam.com.ar/",
   },
   {
     name: "Construir CyT",
     description: "Construccion colectiva en ciencia y tecnologia",
     logoText: "CyT",
-    link: "https://unsam.edu.ar/",
+    link: "https://www.instagram.com/construir.cecyt/",
   },
   {
     name: "Lic. en Ciencia de Datos",
     description: "Carrera de Ciencia de Datos UNSAM",
     logoText: "LCD",
-    link: "https://www.instagram.com/cienciadedatosunsam/",
+    link: "https://www.unsam.edu.ar/escuelas/ecyt/661/ciencia/ciencia-de-datos",
   },
   {
     name: "UNSAM",

@@ -20,8 +20,8 @@ export function About() {
 
             return (
               <Card key={feature.title} className="gap-4 rounded-md p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <div className="flex size-12 items-center justify-center rounded-md bg-primary/10">
-                  <Icon className="size-6 text-primary" />
+                <div className="flex size-12 items-center justify-center rounded-md bg-sky-100">
+                  <Icon className="size-6 text-sky-700" />
                 </div>
                 <h3 className="text-xl font-bold">{feature.title}</h3>
                 <p className="text-muted-foreground">{feature.description}</p>

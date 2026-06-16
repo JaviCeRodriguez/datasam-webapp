@@ -16,11 +16,15 @@
 
 ```bash
 pnpm install
-pnpm build
 pnpm lint
+pnpm tsc --noEmit
 ```
 
-No dedicated test script; typecheck is via `next build` (TypeScript).
+Validation is via `pnpm lint` and `pnpm tsc --noEmit`.
+
+Do not run `pnpm build` as a default validation step. Never run `pnpm build` while a dev server is already running.
+
+Playwright tests must run against an already-running dev server on port 3000.
 
 ---
 
@@ -28,7 +32,7 @@ No dedicated test script; typecheck is via `next build` (TypeScript).
 
 - **Code style**: TypeScript strict (`tsconfig.json`), Prettier (`.prettierrc.js`: semicolons off, trailing comma es5, printWidth 120), ESLint (Next + Prettier). Use `pnpm lint` before PR.
 - **Imports**: Use `@/` alias for project root (e.g. `@/components/ui/button`, `@/lib/utils`, `@/db`).
-- **Commits / PRs**: Prefer clear, conventional-style messages. PRs should pass `pnpm lint` and `pnpm build`; see wiki for full flow.
+- **Commits / PRs**: Prefer clear, conventional-style messages. PRs should pass `pnpm lint` and `pnpm tsc --noEmit`; see wiki for full flow.
 
 ---
 
@@ -80,6 +84,6 @@ rg -n "from ['\"]@/components/ui" app/ components/
 ## 6. Definition of Done
 
 - [ ] `pnpm lint` passes
-- [ ] `pnpm build` passes
+- [ ] `pnpm tsc --noEmit` passes
 - [ ] No new `.env*` or secrets committed
 - [ ] Changes follow patterns in the nearest `AGENTS.md` (app, db, or components)

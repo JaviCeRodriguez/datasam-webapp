@@ -4,13 +4,13 @@ export function EventFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-[#07111f] py-14 text-slate-100">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" />
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,211,238,0.12),transparent_36%,rgba(192,38,211,0.12)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(34,211,238,0.12),transparent_36%,rgba(14,165,233,0.14)_100%)]" />
 
       <div className="relative mx-auto max-w-7xl px-4">
         <div className="mb-10 grid gap-10 md:grid-cols-[1.2fr_0.8fr_1.2fr]">
           <div className="max-w-sm">
             <div className="mb-4 flex items-center gap-3">
-              <span className="flex size-11 items-center justify-center rounded-md bg-[#c026d3] font-bold text-white shadow-lg shadow-fuchsia-950/30">
+              <span className="flex size-11 items-center justify-center rounded-md bg-[#0284c7] font-bold text-white shadow-lg shadow-sky-950/30">
                 ED
               </span>
               <span className="text-lg font-bold">{eventDetails.name}</span>
@@ -18,6 +18,14 @@ export function EventFooter() {
             <p className="text-sm leading-6 text-slate-300">
               El evento más importante para estudiantes de Ciencia de Datos.
             </p>
+            <a
+              href={eventDetails.locationUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex text-sm font-semibold text-cyan-100 underline-offset-4 hover:text-white hover:underline"
+            >
+              {eventDetails.location}
+            </a>
             <p className="mt-5 font-mono text-xs font-semibold uppercase text-cyan-200">{eventDetails.hashtag}</p>
           </div>
 
