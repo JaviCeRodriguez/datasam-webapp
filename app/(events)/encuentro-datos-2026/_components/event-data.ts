@@ -7,8 +7,7 @@ export const eventDetails = {
   name: "1° Encuentro Nacional de Estudiantes de Ciencia de Datos",
   date: "Sábado 10 de Octubre 2026",
   location: "ITS - UNSAM - San Martín - Buenos Aires",
-  locationUrl:
-    "https://www.google.com/maps/search/?api=1&query=Instituto%20de%20Tecnolog%C3%ADa%20Sabato%20UNSAM%20San%20Mart%C3%ADn",
+  locationUrl: "https://maps.app.goo.gl/7rF99fDhis6bXTup7",
   subtitle: "El evento más importante que conecta a estudiantes de Ciencia de Datos de todo el país.",
   registrationUrl:
     "https://docs.google.com/forms/d/e/1FAIpQLSfn7qrshPZ-qQacdIVjAsrgn5PmhwPEeIkhh2fssdg7T0m_yA/viewform?usp=header",
