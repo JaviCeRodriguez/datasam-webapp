@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Menu, X } from "lucide-react"
 
@@ -29,12 +28,7 @@ export function EventNavigation() {
     >
       <div className="mx-auto max-w-7xl px-4 py-3">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/encuentro-datos-2026" className="flex min-w-0 items-center gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-[#0284c7] text-sm font-bold text-white">
-              ED
-            </span>
-            <span className="truncate text-lg font-bold">{eventDetails.name}</span>
-          </Link>
+          <div className="flex-1" />
 
           <div className="hidden items-center gap-6 md:flex">
             {navItems.map((item) => (

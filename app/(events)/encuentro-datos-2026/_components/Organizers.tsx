@@ -2,6 +2,7 @@ import Image from "next/image"
 import { ExternalLink } from "lucide-react"
 
 import { Card } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 import { organizers } from "./event-data"
 
@@ -20,20 +21,16 @@ export function Organizers() {
           {organizers.map((organizer) => (
             <a key={organizer.name} href={organizer.link} target="_blank" rel="noopener noreferrer">
               <Card className="h-full items-center gap-4 rounded-md p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                <div className="flex size-20 items-center justify-center rounded-md border bg-white p-3">
-                  {organizer.logo ? (
-                    <div className="relative size-full">
-                      <Image
-                        src={organizer.logo}
-                        alt={organizer.name}
-                        fill
-                        sizes="80px"
-                        className="object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <span className="text-xl font-black text-sky-700">{organizer.logoText}</span>
-                  )}
+                <div className="flex size-20 items-center justify-center overflow-hidden rounded-md border bg-white p-3">
+                  <div className="relative size-full">
+                    <Image
+                      src={organizer.logo}
+                      alt={organizer.name}
+                      fill
+                      sizes="80px"
+                      className={cn("object-contain", organizer.logoClassName)}
+                    />
+                  </div>
                 </div>
                 <div>
                   <h3 className="font-bold">{organizer.name}</h3>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { CalendarClock } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -38,11 +39,17 @@ export default function EncuentroDatos2026Page() {
           <p className="mx-auto mb-8 max-w-2xl text-balance text-lg text-muted-foreground">
             Completá el formulario para ayudarnos a dimensionar la acreditación y las actividades del encuentro.
           </p>
-          <Button asChild size="lg" className="px-8 text-base font-semibold">
-            <a href={eventDetails.registrationUrl} target="_blank" rel="noopener noreferrer">
-              Ir al formulario de preinscripcion
-            </a>
-          </Button>
+          <p className="mb-6 inline-flex items-center gap-2 rounded-md bg-sky-100 px-4 py-2 text-sm font-semibold text-sky-900">
+            <CalendarClock className="size-4 text-sky-700" />
+            {eventDetails.formsDeadline}
+          </p>
+          <div>
+            <Button asChild size="lg" className="px-8 text-base font-semibold">
+              <a href={eventDetails.registrationUrl} target="_blank" rel="noopener noreferrer">
+                Ir al formulario de preinscripción
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
       <EventFooter />

@@ -1,7 +1,5 @@
 import { BarChart3, Presentation, Users } from "lucide-react"
 
-const assetPath = "/events/encuentro-datos-2026"
-
 export const eventDetails = {
   shortName: "ENECD",
   name: "1° Encuentro Nacional de Estudiantes de Ciencia de Datos",
@@ -13,6 +11,7 @@ export const eventDetails = {
     "https://docs.google.com/forms/d/e/1FAIpQLSfn7qrshPZ-qQacdIVjAsrgn5PmhwPEeIkhh2fssdg7T0m_yA/viewform?usp=header",
   talksUrl:
     "https://docs.google.com/forms/d/e/1FAIpQLSegVGY62jf3WtG2OvC9MjzuS0YiheKvnEemGv7WEc2eLZUV4w/viewform?usp=header",
+  formsDeadline: "Fecha límite viernes 31/07/2026",
   hashtag: "#ENECD2026",
 }
 
@@ -60,25 +59,27 @@ export const organizers = [
   {
     name: "DATA SAM",
     description: "Comunidad de datos de UNSAM",
-    logo: "/images/logo_h_claro_final.svg",
+    logo: "/images/logo_v_claro_sombra_final.svg",
     link: "https://datasam.com.ar/",
   },
   {
     name: "Construir CyT",
     description: "Construccion colectiva en ciencia y tecnologia",
-    logoText: "CyT",
+    logo: "/images/construir_cyt.jpg",
     link: "https://www.instagram.com/construir.cecyt/",
   },
   {
     name: "Lic. en Ciencia de Datos",
     description: "Carrera de Ciencia de Datos UNSAM",
-    logoText: "LCD",
+    logo: "/images/unsam_lcd.jpg",
+    logoClassName: "scale-[1.45]",
     link: "https://www.unsam.edu.ar/escuelas/ecyt/661/ciencia/ciencia-de-datos",
   },
   {
     name: "UNSAM",
     description: "Universidad Nacional de San Martin",
-    logo: `${assetPath}/unsam-logo.jpg`,
+    logo: "/images/unsam.jpg",
+    logoClassName: "scale-[2.3]",
     link: "https://www.unsam.edu.ar/",
   },
 ]

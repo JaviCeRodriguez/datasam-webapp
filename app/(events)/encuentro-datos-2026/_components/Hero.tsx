@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Calendar, MapPin } from "lucide-react"
+import { Calendar, CalendarClock, MapPin } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -79,6 +79,10 @@ export function Hero() {
               <a href="#agenda">Ver agenda</a>
             </Button>
           </div>
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-100">
+            <CalendarClock className="size-4 text-[#67e8f9]" />
+            {eventDetails.formsDeadline}
+          </p>
         </div>
       </div>
     </section>
