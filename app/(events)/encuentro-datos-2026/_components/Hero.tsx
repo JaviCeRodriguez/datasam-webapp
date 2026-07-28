@@ -25,7 +25,8 @@ export function Hero() {
       <div className="relative z-10 mx-auto flex min-h-[calc(100vh-6rem)] max-w-7xl items-center px-4 py-16">
         <div className="max-w-4xl space-y-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-50 shadow-[0_0_40px_rgba(34,211,238,0.18)] backdrop-blur">
-            <span className="size-2 rounded-full bg-[#22d3ee]" />Evento nacional presencial
+            <span className="size-2 rounded-full bg-[#22d3ee]" />
+            Evento nacional presencial · Entrada gratuita
           </div>
 
           <div className="space-y-5">

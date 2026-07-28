@@ -18,8 +18,8 @@ export function Schedule() {
           </p>
         </div>
 
-        <div className="relative mx-auto max-w-4xl">
-          <Card className="overflow-hidden rounded-md p-0 blur-[2px] select-none">
+        <div className="mx-auto max-w-4xl">
+          <Card className="overflow-hidden rounded-md p-0">
             <div className="grid grid-cols-[1fr_1fr_1.6fr] border-b bg-muted/60 px-4 py-3 text-sm font-semibold text-muted-foreground md:grid-cols-[160px_160px_1fr]">
               <span>Inicio</span>
               <span>Fin</span>
@@ -38,14 +38,6 @@ export function Schedule() {
               ))}
             </div>
           </Card>
-          <div className="absolute inset-0 flex items-center justify-center rounded-md bg-background/45 px-4 backdrop-blur-[1px]">
-            <div className="max-w-xl rounded-md border border-sky-200 bg-sky-50 px-5 py-4 text-center shadow-lg shadow-sky-950/10">
-              <p className="text-base font-bold text-sky-950">Agenda en preparación</p>
-              <p className="mt-1 text-sm font-medium text-sky-900">
-                Próximamente daremos a conocer los horarios definitivos, ponentes y otras actividades del encuentro.
-              </p>
-            </div>
-          </div>
         </div>
 
         <Card className="mx-auto mt-8 max-w-4xl rounded-md border-sky-200 bg-sky-50 p-6">
