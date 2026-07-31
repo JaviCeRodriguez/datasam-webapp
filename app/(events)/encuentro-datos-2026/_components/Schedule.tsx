@@ -51,10 +51,16 @@ export function Schedule() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   Sumate a las mesas ordinarias y compartí tu trabajo con la comunidad.
                 </p>
-                <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-sky-900">
-                  <CalendarClock className="size-4 text-sky-700" />
-                  {eventDetails.formsDeadline}
-                </p>
+                <div className="mt-3 space-y-1 text-sm font-semibold text-sky-900">
+                  <p className="flex items-center gap-2">
+                    <CalendarClock className="size-4 shrink-0 text-sky-700" />
+                    {eventDetails.talksDeadline}
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <CalendarClock className="size-4 shrink-0 text-sky-700" />
+                    {eventDetails.talksNotificationDate}
+                  </p>
+                </div>
               </div>
             </div>
             <Button asChild className="shrink-0 bg-[#0284c7] text-white hover:bg-[#0369a1]">

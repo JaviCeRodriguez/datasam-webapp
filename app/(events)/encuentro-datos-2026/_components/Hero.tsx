@@ -82,7 +82,7 @@ export function Hero() {
           </div>
           <p className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-100">
             <CalendarClock className="size-4 text-[#67e8f9]" />
-            {eventDetails.formsDeadline}
+            {eventDetails.registrationDeadline}
           </p>
         </div>
       </div>

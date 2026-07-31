@@ -11,7 +11,9 @@ export const eventDetails = {
     "https://docs.google.com/forms/d/e/1FAIpQLSfn7qrshPZ-qQacdIVjAsrgn5PmhwPEeIkhh2fssdg7T0m_yA/viewform?usp=header",
   talksUrl:
     "https://docs.google.com/forms/d/e/1FAIpQLSegVGY62jf3WtG2OvC9MjzuS0YiheKvnEemGv7WEc2eLZUV4w/viewform?usp=header",
-  formsDeadline: "Fecha límite viernes 31/07/2026",
+  registrationDeadline: "Fecha límite de inscripción para oyentes: 31/08/2026",
+  talksDeadline: "Fecha límite de inscripción de ponencias: 16/08/2026",
+  talksNotificationDate: "Notificación de selección de ponencias: 14/09/2026",
   hashtag: "#ENECD2026",
 }
 

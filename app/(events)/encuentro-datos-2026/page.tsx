@@ -41,7 +41,7 @@ export default function EncuentroDatos2026Page() {
           </p>
           <p className="mb-6 inline-flex items-center gap-2 rounded-md bg-sky-100 px-4 py-2 text-sm font-semibold text-sky-900">
             <CalendarClock className="size-4 text-sky-700" />
-            {eventDetails.formsDeadline}
+            {eventDetails.registrationDeadline}
           </p>
           <div>
             <Button asChild size="lg" className="px-8 text-base font-semibold">
