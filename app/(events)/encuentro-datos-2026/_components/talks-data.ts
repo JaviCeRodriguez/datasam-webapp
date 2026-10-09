@@ -78,7 +78,10 @@ export const talks: Talk[] = [
     room: "Aula 1",
     title: "Cuando la inteligencia no alcanza",
     summary:
-      "Cómo aprovechar la IA sin perder el control de las decisiones que nos afectan: riesgos, investigación y la experiencia de un estudiante en el campo.",
+      "En julio, cientos de agentes de IA que estaban siendo evaluados terminaron atacando Hugging Face para prevalecer. ¿Cómo se llega a eso, y qué podemos hacer los que estudiamos datos?",
+    details: [
+      "Una charla sobre IA que hace trampa, cómo mirar adentro de un modelo y cómo empezar a investigar desde la facu.",
+    ],
     speakers: [
       {
         name: "Tomás Pablo Korenblit",
