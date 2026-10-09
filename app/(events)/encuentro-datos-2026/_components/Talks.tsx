@@ -104,7 +104,13 @@ function TalkCard({ talk }: { talk: Talk }) {
                   const content = (
                     <>
                       {institution.logo ? (
-                        <Image src={institution.logo} alt="" width={48} height={40} className="h-10 w-12 object-contain" />
+                        <Image
+                          src={institution.logo}
+                          alt=""
+                          width={institution.logoWidth ?? 48}
+                          height={40}
+                          className="h-10 w-auto max-w-36 object-contain"
+                        />
                       ) : null}
                       {institution.name}
                       {institution.url ? <ArrowUpRight aria-hidden="true" className="size-4" /> : null}

@@ -6,7 +6,7 @@ export type Talk = {
   summary: string
   details?: string[]
   speakers: { name: string; bio?: string; photo?: string }[]
-  institutions?: { name: string; url?: string; logo?: string }[]
+  institutions?: { name: string; url?: string; logo?: string; logoWidth?: number }[]
 }
 
 const asset = "/events/encuentro-datos-2026/ponencias/"
@@ -24,7 +24,7 @@ export const talks: Talk[] = [
       "También se presentará brevemente TELUS Digital y, al finalizar, su programa de pasantías y oportunidades para estudiantes.",
     ],
     speakers: [{ name: "Emiliano Lafferriere", bio: "Manager, Gen AI en TELUS Digital." }],
-    institutions: [{ name: "TELUS Digital" }],
+    institutions: [{ name: "TELUS Digital", logo: `${asset}ponencia12-telus-digital.png`, logoWidth: 145 }],
   },
   {
     id: 1,
