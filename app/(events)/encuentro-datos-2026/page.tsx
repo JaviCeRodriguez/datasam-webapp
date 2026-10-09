@@ -9,6 +9,7 @@ import { EventNavigation } from "./_components/EventNavigation"
 import { Hero } from "./_components/Hero"
 import { Organizers } from "./_components/Organizers"
 import { Schedule } from "./_components/Schedule"
+import { Talks } from "./_components/Talks"
 import { UniversitiesMap } from "./_components/UniversitiesMap"
 import { academicProposals } from "./_components/academic-proposals"
 import { eventDetails } from "./_components/event-data"
@@ -31,6 +32,7 @@ export default function EncuentroDatos2026Page() {
       <Hero />
       <About />
       <Schedule />
+      <Talks />
       <UniversitiesMap academicProposals={academicProposals} />
       <Organizers />
       <section id="registro" className="bg-muted/30 py-20">

@@ -21,6 +21,7 @@ export const navItems = [
   { label: "Inicio", href: "#inicio" },
   { label: "ENECD", href: "#que-es" },
   { label: "Agenda", href: "#agenda" },
+  { label: "Ponencias", href: "#ponencias" },
   { label: "Propuestas", href: "#propuestas" },
   { label: "Organizadores", href: "#organizadores" },
 ]

@@ -1,9 +1,9 @@
-import { CalendarClock, Mic2 } from "lucide-react"
+import { Mic2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
-import { eventDetails, schedule } from "./event-data"
+import { schedule } from "./event-data"
 
 export function Schedule() {
   return (
@@ -47,25 +47,15 @@ export function Schedule() {
                 <Mic2 className="size-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Inscribite para exponer tu proyecto o charla</h3>
+                <h3 className="text-xl font-bold">Conocé las ponencias</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Sumate a las mesas ordinarias y compartí tu trabajo con la comunidad.
+                  Explorá los trabajos, sus oradores y las instituciones que participan en las mesas.
                 </p>
-                <div className="mt-3 space-y-1 text-sm font-semibold text-sky-900">
-                  <p className="flex items-center gap-2">
-                    <CalendarClock className="size-4 shrink-0 text-sky-700" />
-                    {eventDetails.talksDeadline}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <CalendarClock className="size-4 shrink-0 text-sky-700" />
-                    {eventDetails.talksNotificationDate}
-                  </p>
-                </div>
               </div>
             </div>
             <Button asChild className="shrink-0 bg-[#0284c7] text-white hover:bg-[#0369a1]">
-              <a href={eventDetails.talksUrl} target="_blank" rel="noopener noreferrer">
-                Cargar ponencia
+              <a href="#ponencias">
+                Ver ponencias
               </a>
             </Button>
           </div>
